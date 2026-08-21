@@ -8,10 +8,10 @@ Paper: [[Ben Mildenhall 2020]]
 Neural Radiance Fields의 약자로, Novel View Synthesis를 해결하기 위해 MLP를 사용하는 방법이다. 3D model reconstruction을 해결하려는 것이 아니다. 크게 *Scene을 표현하는 방법* 과 *렌더링 방법* 두 단계에서 설명이 필요하다.
 ## Scene의 표현 방법
 $$F_\Theta:(x,d)\rightarrow (c, \sigma)$$위의 수식이 NeRF의 표현 방법이다. $\Theta$로 파라미터화 된 신경망 $F_\Theta$는 두 개의 입력을 받는다. $x$는 **광선 위에서 샘플링된 3D 점**이고, $d$는 **그 광선의 방향**이다. $x$를 카메라의 위치로 오해하기 쉬운데 그렇지 않다. ![[Pasted image 20260818220103.png]]
-위 figure를 보면 두 번째 사진에 카메라의 다양한 위치와 각도들이 표시된 것을 볼 수 있다. 이 정보를 받아, 모델은 $c, \sigma$를 내놓는다. 이는 각각 radiance(빛)와 volume density이다.
+위 figure를 보면 두 번째 사진에 카메라의 다양한 위치와 각도들이 표시된 것을 볼 수 있다. 이 정보를 받아, 모델은 $c, \sigma$를 내놓는다. 이는 각각 radiance(빛)와 [[Volume Density]]이다.
 이 모델의 구조는 아래와 같다.
 ![[Pasted image 20260821195519.png]]
-특이사항은 $\sigma$를 출력할 때는 $d$를 전혀 관여시키지 않는다는 것이다. 이는 Multiview Consistency를 만족시키기 위한 디자인으로, volume density가 카메라
+특이사항은 $\sigma$를 출력할 때는 $d$를 전혀 관여시키지 않는다는 것이다. 이는 Multiview Consistency를 만족시키기 위한 디자인으로, volume density가 카메라가 보는 각도에 따라 달라지면 안되기 때문이다. 하지만 색은 각도에 따라 달라질 수도 있으므로 $d$를 포함시켜 계산한다. 
 ## Rendering 방법
 
 
