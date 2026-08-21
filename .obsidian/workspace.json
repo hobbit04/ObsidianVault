@@ -39,14 +39,12 @@
             "id": "9c43996599098ea5",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "pdf",
               "state": {
-                "file": "__source/Ben Mildenhall 2020.md",
-                "mode": "source",
-                "source": false
+                "file": "Archive/NeRF.pdf"
               },
-              "icon": "lucide-file",
-              "title": "Ben Mildenhall 2020"
+              "icon": "lucide-file-text",
+              "title": "NeRF"
             }
           }
         ],
@@ -221,7 +219,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 863
+    "width": 802
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -239,14 +237,18 @@
   },
   "active": "4de65e6410ddeda8",
   "lastOpenFiles": [
+    "Archive/~$NeRF_presentation.pptx",
+    "__source/_img/Pasted image 20260821195519.png",
+    "Archive/NeRF_presentation.pptx",
+    "Archive/NeRF.pdf",
     "__source/Ben Mildenhall 2020.md",
     "topics/NeRF.md",
+    "topics/sedogHqRY",
     "Archive/Spectral Bias.pdf",
     "CLAUDE.md",
     "새 텍스트 문서.txt",
     "topics/Point Cloud.md",
     "__source/Jonathan Ho 2020.md",
-    "Archive/NeRF.pdf",
     "__source/_img/Pasted image 20260818220118.png",
     "__source/_img/Pasted image 20260818220103.png",
     "topics/3D Representation.md",
@@ -264,14 +266,11 @@
     "topics/Eikonal equation.md",
     "topics/Mesh.md",
     "topics/Marching Cubes.md",
-    "Archive/Signed Distance Function.pdf",
     "topics/Scale-invariant log loss.md",
-    "Archive/SiLog.pdf",
     "topics/AbsRel.md",
     "topics/RMSE.md",
     "topics/Robust loss function.md",
     "topics/Fundamental Matrix.md",
-    "Archive/Point Transformer.pdf",
     "topics/UV coordinate.md",
     "topics/Chamfer distance.md",
     "topics/Voxel.md",
@@ -283,7 +282,6 @@
     "__source/_img/Pasted image 20260812143055.png",
     "__source/_img/Pasted image 20260812101705.png",
     "__source/_img/Pasted image 20260811154609.png",
-    "__source/_img/Pasted image 20260811124552.png",
     "Untitled.canvas"
   ]
 }
