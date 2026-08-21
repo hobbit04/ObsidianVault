@@ -1,0 +1,22 @@
+{
+  "id": "conv-1786593498664-k5sb4xzvx",
+  "providerId": "claude",
+  "title": "Verify and explain paper summaries",
+  "titleGenerationStatus": "success",
+  "createdAt": 1786593498750,
+  "lastActivityAt": 1786604178707,
+  "sessionId": "911e4aef-ace4-4891-9342-70d547dd37ca",
+  "selectedModel": "opus",
+  "providerState": {
+    "providerSessionId": "911e4aef-ace4-4891-9342-70d547dd37ca"
+  },
+  "usage": {
+    "model": "opus",
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 624,
+    "cacheReadInputTokens": 91948,
+    "contextWindow": 1000000,
+    "contextTokens": 92574,
+    "percentage": 9
+  }
+}

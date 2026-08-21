@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for f in $\\(find . -path ./.obsidian -prune -o -name \"*.md\" -print\\); do echo \"════ $f\"; head -40 \"$f\"; done)",
+      "Bash(for f in topics/*.md __source/*.md; do echo \"════════ $f\"; cat \"$f\"; echo; done)"
+    ]
+  }
+}

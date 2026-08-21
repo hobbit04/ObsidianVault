@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "conversationId": "conv-1786890670829-yw46w6u1w",
+  "records": [
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786890670886-myq06xj",
+      "userTurnOrdinal": 1,
+      "state": "accepted",
+      "localMessageId": "msg-1786890670821-pc3x0z5",
+      "timestamp": 1786890670821,
+      "rawDisplayText": "Depth map에 대해 알아야 할 것들을 설명해줘. 너무 길게 쓰진 말고, 핵심만 간단히 작성해줘. 레퍼런스도 함께 주면 내가 레퍼런스를 공부해볼게",
+      "canonicalText": "Depth map에 대해 알아야 할 것들을 설명해줘. 너무 길게 쓰진 말고, 핵심만 간단히 작성해줘. 레퍼런스도 함께 주면 내가 레퍼런스를 공부해볼게",
+      "context": {
+        "currentNote": {
+          "path": "Depth Map.md"
+        }
+      },
+      "images": [],
+      "contentDigest": "c1390deca792a0253b1adb319d9414e07d6f8aa5c202eee6ceda0646b12cdbd9",
+      "providerUserMessageId": "6d87c211-aeb4-4c02-864d-6cdd5f1ec858",
+      "providerAssistantMessageId": "7e78e197-836c-49f2-b097-3ae4bf271c6c"
+    }
+  ]
+}

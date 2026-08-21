@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "conversationId": "conv-1786952091092-zqnai9mqw",
+  "records": [
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786952091144-2fi25n3",
+      "userTurnOrdinal": 1,
+      "state": "accepted",
+      "localMessageId": "msg-1786952091087-58gu2n7",
+      "timestamp": 1786952091087,
+      "rawDisplayText": "/topic-helper \nSDF에 대해 설명해줘",
+      "canonicalText": "/topic-helper \nSDF에 대해 설명해줘",
+      "context": {
+        "currentNote": {
+          "path": "topics/Signed Distance Function.md"
+        }
+      },
+      "images": [],
+      "contentDigest": "577b52e2c3f5a534a97037ac665783777717e9594f70466bd5ce0143d9673fa4",
+      "providerUserMessageId": "86cec410-16f8-4104-86c2-f9e6da26079e",
+      "providerAssistantMessageId": "08f2dfcc-ef8c-46bf-8fe6-2d9b8769f694"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786957913783-4q2ouc0",
+      "userTurnOrdinal": 2,
+      "state": "accepted",
+      "localMessageId": "msg-1786957913771-2xqahj1",
+      "timestamp": 1786957913771,
+      "rawDisplayText": "닫힌 표면이 왜 저렇게 나타날 수 있는거야? 편미분 기호가 아니라 그냥 표면임을 의미하는건가..?",
+      "canonicalText": "닫힌 표면이 왜 저렇게 나타날 수 있는거야? 편미분 기호가 아니라 그냥 표면임을 의미하는건가..?",
+      "images": [],
+      "contentDigest": "3b77c096f64f0daee067e60da217f5652329d5383d96500d224c958070dd6831",
+      "providerUserMessageId": "e87b43ab-e6d3-4dcc-9043-d694dde17a93",
+      "providerAssistantMessageId": "c6eae421-5060-4a26-8afd-90d8ead81828"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786970135340-umg1mzk",
+      "userTurnOrdinal": 3,
+      "state": "accepted",
+      "localMessageId": "msg-1786970135329-x5b1n4r",
+      "timestamp": 1786970135329,
+      "rawDisplayText": "핵심 성질이라고 한 것들 중에 불린 연산은 무슨뜻이야? CSG는 뭐야?",
+      "canonicalText": "핵심 성질이라고 한 것들 중에 불린 연산은 무슨뜻이야? CSG는 뭐야?",
+      "images": [],
+      "contentDigest": "7f56d8fda652ecbf77deca7ff1286eb2c6782ff947905532dfaf5a9954c15f79",
+      "providerUserMessageId": "54a65fe3-351c-4745-bc3c-3551bd1e14c1"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786971511970-qixj5xq",
+      "userTurnOrdinal": 4,
+      "state": "accepted",
+      "localMessageId": "msg-1786971511961-p2nkznf",
+      "timestamp": 1786971511961,
+      "rawDisplayText": "내 SDF 노트의 마지막 부분 수식을 봐줘. 더 이쁘게 고쳐줘",
+      "canonicalText": "내 SDF 노트의 마지막 부분 수식을 봐줘. 더 이쁘게 고쳐줘",
+      "images": [],
+      "contentDigest": "5f21a9c78ecbc0a9576368f14bf49f6af593c2262a9562d8747d99171fc6bc0a",
+      "providerUserMessageId": "65caddf8-6cc6-4332-8338-b49433860902",
+      "providerAssistantMessageId": "30fc712f-d488-4958-9e95-a40164ecf5cc"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786971927479-r6edspe",
+      "userTurnOrdinal": 5,
+      "state": "accepted",
+      "localMessageId": "msg-1786971927471-3a6npdb",
+      "timestamp": 1786971927471,
+      "rawDisplayText": "Ground truth를 생성할 때 어떻게 해? 얘도 point map이나 depth map 에서 얻나? 아니면 mesh 에서?",
+      "canonicalText": "Ground truth를 생성할 때 어떻게 해? 얘도 point map이나 depth map 에서 얻나? 아니면 mesh 에서?",
+      "images": [],
+      "contentDigest": "1e1fd858e9e92a8f997785644d90255f8b130bd5349b371e6903ffe34fd87c81",
+      "providerUserMessageId": "6fc31df5-2380-4149-88b7-9a6e027f36a4",
+      "providerAssistantMessageId": "75690596-6c7e-4e0b-bcd8-17c80ba01265"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786973112181-dcmf251",
+      "userTurnOrdinal": 6,
+      "state": "accepted",
+      "localMessageId": "msg-1786973112177-qi6g2ab",
+      "timestamp": 1786973112177,
+      "rawDisplayText": "DeepSDF에서 제안한 방법에 대해 더 자세히 설명해줘",
+      "canonicalText": "DeepSDF에서 제안한 방법에 대해 더 자세히 설명해줘",
+      "images": [],
+      "contentDigest": "958a9cbdae5304f134ffd79299248ff00fe0418be56d2cea29127ddeeaec447e",
+      "providerUserMessageId": "22ca0aa2-d46e-4399-a203-509a68058db2",
+      "providerAssistantMessageId": "46ec93c2-dae8-4f82-951c-c3b475d3d516"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786974180118-i0gv3al",
+      "userTurnOrdinal": 7,
+      "state": "accepted",
+      "localMessageId": "msg-1786974180107-z54ku8s",
+      "timestamp": 1786974180107,
+      "rawDisplayText": "Depth map을 이용해 ground truth SDF를 생성하는 방법에 대해 더 자세히 설명해줘",
+      "canonicalText": "Depth map을 이용해 ground truth SDF를 생성하는 방법에 대해 더 자세히 설명해줘",
+      "images": [],
+      "contentDigest": "26463860cb09e621f07622cd0074d5dc6706fea742a9bca69323b9266726588e",
+      "providerUserMessageId": "c300d38f-b39e-4c1a-ac3a-b0ddf04063dd",
+      "providerAssistantMessageId": "894ebc61-9565-4d14-bd89-68ae87656b7e"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "msg-1786975822087-nmswk5u",
+      "userTurnOrdinal": 8,
+      "state": "accepted",
+      "localMessageId": "msg-1786975822084-vvusl72",
+      "timestamp": 1786975822084,
+      "rawDisplayText": "대답.",
+      "canonicalText": "대답.",
+      "images": [],
+      "contentDigest": "7da12f6e93200318575c210f9cbfdf9b9da529eeb12331ff748a1b4aa77273aa",
+      "providerUserMessageId": "a38443ba-768b-46a4-b8c1-1839e03fc044"
+    }
+  ]
+}
