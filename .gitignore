@@ -3,3 +3,6 @@
 .obsidian/cache/
 .trash/
 .DS_Store
+
+# Claudian chat session logs
+.claudian/sessions/
