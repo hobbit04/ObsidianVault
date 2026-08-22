@@ -6,3 +6,6 @@
 
 # Claudian chat session logs
 .claudian/sessions/
+
+# Plugin runtime state (tab/session, not worth versioning)
+.obsidian/plugins/realclaudian/data.json
