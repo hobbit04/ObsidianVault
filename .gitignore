@@ -10,5 +10,5 @@
 # Plugin runtime state (tab/session, not worth versioning)
 .obsidian/plugins/realclaudian/data.json
 
-# Paper PDFs (재다운로드 가능, 저장소 비대화 방지)
-Archive/*.pdf
+# Archive: 논문 PDF/슬라이드 등 첨부 자료 전체 (재다운로드 가능, 저장소 비대화 방지)
+Archive/
