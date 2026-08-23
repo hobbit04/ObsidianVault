@@ -35,10 +35,20 @@ Demo: https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/
 산
 $A=RS$로 두는 것에 대해 직관적인 해석도 가능하다. 단위 구를 변형시킨 것이 3D Gaussian이라고 할 수 있는데, 단위 구를 축 방향으로 늘리는 행렬이 $S$, 회전 시키는 행렬이 $R$, 그리고 특정 위치로 옮겨 놓는 과정은 $\mu$를 더하는 것으로 이해할 수 있다.
 ### $\alpha$
-[[NeRF]]에서도 나왔던 $\alpha$는 $\sigma$를 통해 간접적으로 얻는 대신 직접 구하는 방법을 택한다. 
+[[NeRF]]에서도 나왔던 $\alpha$는 $\sigma$를 통해 간접적으로 얻는 대신 직접 구하는 방법을 택한다. 0과 1 사이의 값이 나와야 하기 때문에 sigmoid를 거쳐 사용한다. $\sigma$와 마찬가지로 view와 상관없는 값이다. 
 
 ### SH계수
 SH 계수는 [[Spherical Harmonics]]의 설명을 참고하자.
 
 ## Rendering 방법
+[[NeRF]] 같은 신경망 forward 과정이 없어 매우 빠르게 렌더링을 할 수 있다. 전체적인 렌더링 과정은 다음과 같다.
+1. Culling
+2. Projection
+3. Binning
+4. Blending
+### Projection
+[[EWA Volume Splatting]]을 이용한다.
+### Binning
+
+
 ## 학습 방법
