@@ -39,10 +39,20 @@ $S=\text{diag}(e^{s_x}, e^{s_y}, e^{s_z})$ 로 저장된다. $s=(s_x,s_y,s_z)$�
 $q$라고 하는 값은 회전 쿼터니언으로, 네 개의 자유도를 갖는 벡터다. $R$이 회전벡터가 되려면 $R^TR=I$ 조건이 성립해야 하는데, 그냥 9개의 자유도를 가진 행렬 $R$을 학습시키면 gradient decent 과정에서 이 조건이 무너진다. 따라서 쿼터니언을 사용해 R을 나타내고, 크기가 1이 되도록 정규화(이때 자유도 하나 감소)를 시켜 사용하면 6개의 자유도를 갖도록 맞출 수 있다. 
 (쿼터니언에 대한 추가 학습 필요...) 
 ### $\alpha$
-[[NeRF]]에서도 나왔던 $\alpha$는 $\sigma$를 통해 간접적으로 얻는 대신 직접 구하는 방법을 택한다. 
+[[NeRF]]에서도 나왔던 $\alpha$는 $\sigma$를 통해 간접적으로 얻는 대신 직접 구하는 방법을 택한다. 0과 1 사이의 값이 나와야 하기 때문에 sigmoid를 거쳐 사용한다. $\sigma$와 마찬가지로 view와 상관없는 값이다. 
 
 ### SH계수
 SH 계수는 [[Spherical Harmonics]]의 설명을 참고하자.
 
 ## Rendering 방법
+[[NeRF]] 같은 신경망 forward 과정이 없어 매우 빠르게 렌더링을 할 수 있다. 전체적인 렌더링 과정은 다음과 같다.
+1. Culling
+2. Projection
+3. Binning
+4. Blending
+### Projection
+[[EWA Volume Splatting]]을 이용한다.
+### Binning
+
+
 ## 학습 방법
