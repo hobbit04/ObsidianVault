@@ -1,5 +1,6 @@
 {
   "attachmentFolderPath": "__source/_img",
   "alwaysUpdateLinks": true,
-  "showLineNumber": true
+  "showLineNumber": true,
+  "spellcheck": true
 }
