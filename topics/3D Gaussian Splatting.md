@@ -5,6 +5,7 @@ tags:
 ---
 Paper: [[Bernhard Kerbl 2023]]
 Demo: https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/
+참고 자료: https://mole-starseeker.tistory.com/158
 
 줄여서 3DGS 라고도 하는 이 기법은, 3D scene을 약 수백만 개의 수많은 3D 가우시안들의 합으로 기술하는 방법이다. 신경망을 사용하지 않는, explicit 한 3d representation 방법이다. 
 ## Scene 표현 방법
@@ -32,7 +33,7 @@ Demo: https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/
 1차원에서는 분산 $s^2$ 하나만으로 가우시안의 모양(위치 제외)을 결정할 수 있었지만, 3차원에선 공분산 행렬이 필요하다. [[Covariance Matrix]]에서 $\Sigma=V\Lambda V^T$로 고윳값 분해를 한 결과를 해석한 바 있다. 여기선 $\Sigma=V\Lambda V^T=RSS^TR^T=RS^2R^T$로 나타내고 의미를 해석해보자(이렇게 두는 이유는 아래에 서술). 먼저 $R$은 $V$와 동일한 행렬로 둘 수 있으므로 eigen vector, 다시말해 타원체의 세 주축의 방향을 의미하는 행렬이 될 것이다. 그리고 $S^2$은 $\Sigma$의 eigen value를 대각원소로 갖는 행렬이 된다. 대응되는 eigen vector 축으로 퍼진 정도를 의미한다.
 
 우리는 [[Covariance Matrix]]를 학습시킬 것이고, 이 행렬은 PSD를 만족해야 하기 때문에, 6개의 자유도를 주는 것 외에도 추가로 제한을 둬야 한다. 그 제한은 $\Sigma = RSS^TR^T$로 두는 것이다. 이렇게 두면 $A=RS$라 할 때 $\Sigma=AA^T$로 둘 수 있고, $$x\Sigma x^T=xAA^Tx^T=||xA||^2\geq 0, \ \forall x$$이므로 항상 PSD한 행렬로 만들 수 있다. 
-산
+
 $A=RS$로 두는 것에 대해 직관적인 해석도 가능하다. 단위 구를 변형시킨 것이 3D Gaussian이라고 할 수 있는데, 단위 구를 축 방향으로 늘리는 행렬이 $S$, 회전 시키는 행렬이 $R$, 그리고 특정 위치로 옮겨 놓는 과정은 $\mu$를 더하는 것으로 이해할 수 있다.
 ### $\alpha$
 [[NeRF]]에서도 나왔던 $\alpha$는 $\sigma$를 통해 간접적으로 얻는 대신 직접 구하는 방법을 택한다. 0과 1 사이의 값이 나와야 하기 때문에 sigmoid를 거쳐 사용한다. $\sigma$와 마찬가지로 view와 상관없는 값이다. 
@@ -46,9 +47,41 @@ SH 계수는 [[Spherical Harmonics]]의 설명을 참고하자.
 2. Projection
 3. Binning
 4. Blending
-### Projection
-[[EWA Volume Splatting]]을 이용한다.
-### Binning
 
+### Culling
+카메라 시점에서 보이지 않는 가우시안인지 아닌지를 매 프레임 판단해 시야 밖의 가우시안은 렌더링에 포함시키지 않는다. 
+### Projection
+[[EWA Volume Splatting]]을 이용한다. 3차원 공간에 있는 수많은 가우시안들을 어떤 시점에서 본 2차원 이미지로 만들어야 하기 때문에 projection이 필요하다. 3D 가우시안은 투영시켜도 2D 가우시안이 된다. 
+### Binning
+반투명한 가우시안들을 겹쳐서 픽셀의 색을 결정해야 할텐데, 겹치는 순서가 중요하다. 카메라에서 가까운 것부터 겹치도록 해야 할텐데, 어디서 바라보느냐에 따라 픽셀 단위로 그 순서가 바뀔 수 있다. 픽셀이 대략 200만개라고 치면 200만개의 픽셀 각각에 대해서 100만개의 가우시안을 정렬해야 하는 상황이다.
+
+계산량이 너무 많기 때문에, 화면을 $16 \times 16$의 타일로 나눠 각 타일 안에서 정렬을 시키는 방식을 택한다. 타일 별로 자신을 덮고 있는 가우시안들의 목록을 만들어, 이를 깊이 순으로 정렬한다. 그리고 같은 타일 내의 픽셀들은 이 순서를 공유하게 한다(타일 단위 근사로 보면 됨).
+### Blending
+가우시안의 정보를 알았으니 픽셀마다 색깔을 결정해야 한다. 이때는 가우시안의 투명도 $\alpha$를 곱해야 한다. 그런데 가우시안의 중심에서 먼 위치가 픽셀에 나타날 때와 중심에서 가까운 위치가 픽셀에 나타날 때 같은 투명도를 곱하면 안된다. 따라서 $\alpha '$을 중심에서 멀어질 수록 작아지도록(중심에선 $\alpha$) 정의해 해당 값을 곱한다. 
+카메라에 가까운 쪽부터 블렌딩을 해야, $T$가 작아졌을 때 계산을 멈출 수 있다. 
 
 ## 학습 방법
+기본적인 학습 루프는 다음과 같다.
+``` TrainingLoop
+COLMAP 점들로 가우시안 초기화
+반복 (30,000회):
+    ① 학습 이미지 중 하나를 무작위로 고름 (카메라 pose를 알고 있음)
+    ② 그 시점에서 렌더링 → 이미지 생성
+    ③ 원본 사진과 비교 → Loss 계산
+    ④ Adam으로 μ, s, q, α, SH 갱신
+    ⑤ 100회마다: 가우시안 개수 조절 (Adaptive Density Control)
+```
+
+### Loss
+두 가지 loss를 합해서 사용한다. $$\mathcal{L}=(1-\lambda)\mathcal{L}_1+\lambda \mathcal{L}_{\text{D-SSIM}}$$크게 $\mathcal{L}_1$ 항([[L1 loss]])과 D-SSIM 항으로 이루어져 있다. L1 손실은 평균적으로 맞는 흐릿한 그림을 그리도록 유도하는데, D-SSIM 항이 이를 규제하는 역할을 한다. 
+### Adaptive Density Control
+여기서는 가우시안의 개수를 조절한다. 다른 파라미터들보다 가끔식 업데이트 된다고 보면 된다. 세 가지 경우가 있다.
+1. Remove: $\alpha$가 너무 작은 가우시안은 없앤다. 크기가 너무 큰 가우시안도 없앤다. 
+위치에 대한 Loss gradient가 특정 threshold보다 크다면, 아래 두 단계 중 하나를 선택해 수행한다.
+2. Clone: $||s||$가, 즉 가우시안의 크기가 너무 작다면 가우시안을 복사 해 gradient 방향으로 이동시켜 공간을 채울 수 있도록 한다.
+3. Split: $||s||$가 너무 크다면 해당 가우시안을 2개로 나눠 크기를 1.6으로 나눈다. 이때 새로 생긴 가우시안의 위치는 원본 가우시안을 확률분포처럼 보고 샘플링 해 결정한다. 
+가우시안의 크기 threshold는 장면 크기에 비례해 정한다. 
+
+---
+![[Pasted image 20260823175052.png]]
+위의 Figure는 위에서 설명한 내용들을 요약한다. Differentiable Tile Rasterizer가 렌더링 부분이라고 생각하면 된다. 
