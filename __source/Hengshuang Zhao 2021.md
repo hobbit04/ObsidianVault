@@ -13,3 +13,5 @@ Conference: CVPR
 기여: 3D point clouds를 위한 트랜스포머 아키텍쳐를 제시했다.
 문제: Semantic scene segmentation, Object part segmentation, Object classification 등 3D point clouds processing
 
+## Point Transformer
+[[Vector Attention]]이라는 것을 사용해 [[Point Cloud]]를 처리한다.
