@@ -14,4 +14,4 @@ Conference: CVPR
 문제: Semantic scene segmentation, Object part segmentation, Object classification 등 3D point clouds processing
 
 ## Point Transformer
-[[Vector Attention]]이라는 것을 사용해 [[Point Cloud]]를 처리한다.
+[[Vector Attention]]이라는 것을 사용해 [[Point Cloud]]를 처리한다. Vector Attention은 저자가 주장하는 셀프 어텐션의 두 종류 중 하나로,  
