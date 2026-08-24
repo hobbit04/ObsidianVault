@@ -64,4 +64,7 @@ Head는 task에 따라 다르다.
 - **mAcc**: Class 별 recall의 평균이다. 
 - **mIoU**: mean Intersection over Union의 약자. 위 세개의 Semantic segmentation metric 중 가장 엄격한 잣대고 이 논문에서 SOTA를 주장한 것도 이 점수가 잘 나와서이다.
 - **instance mIoU**: 각 instance마다 평균 shape IoU를 계산하고 모든 instance에 대해 평균을 내는 방식.
-- **category mIoU**: 카테고리별로 
+- **category mIoU**: 평균 shape IoU 계산까지는 동일하고, 이후 카테고리별로 평균을 내는 방식.
+![[Pasted image 20260824150432.png|508]]
+(Claude가 생성한 예시)
+
