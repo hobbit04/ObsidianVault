@@ -63,4 +63,5 @@ Head는 task에 따라 다르다.
 - **OA**: Overall Accuracy. (맞힌 점) / (전체 점)
 - **mAcc**: Class 별 recall의 평균이다. 
 - **mIoU**: mean Intersection over Union의 약자. 위 세개의 Semantic segmentation metric 중 가장 엄격한 잣대고 이 논문에서 SOTA를 주장한 것도 이 점수가 잘 나와서이다.
-- **instance mIoU**: 
+- **instance mIoU**: 각 instance마다 평균 shape IoU를 계산하고 모든 instance에 대해 평균을 내는 방식.
+- **category mIoU**: 카테고리별로 
