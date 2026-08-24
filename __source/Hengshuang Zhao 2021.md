@@ -30,3 +30,13 @@ Vector attention의 일반형(Eq. 2)을 point cloud에 맞게 고친 것이 Eq. 
 
 이 layer는 단독으로 쓰이지 않고 residual block 안에 들어간다.$$x \to \text{linear} \to \text{PT layer} \to \text{linear} \to (+\,x)$$따라서 $y_i$는 블록의 최종 출력이 아니라 residual branch의 출력이다.
 ### Position Encoding
+원래 트랜스포머에서는 어텐션 연산이 permutation invariant해서 토큰의 순서를 부여하기 위해 도입되었지만, 여기서는 공간적인 정보를 주기 위해 사용한다. 
+
+논문에서 제시된 PE는 기존의 PE들(sin, cos 이용)과 달리 신경망으로 학습된다. $$\delta=\theta(p_i-p_j)$$즉 point 들의 위치의 차이를 입력으로 받아 신경망을 통과시킨 뒤 그 값을 PE로 활용한다. 
+### Point Transformer Block
+![[Pasted image 20260824112257.png|214]]
+위 그림과 같이 residual한 연결을 사용한다. 입력, 출력으로 $(x, p)$를 모두 받기 때문에 이 블록은 포인트의 feature와 위치를 모두 활용한다고 볼 수 있다.
+### Network Architecture
+![[Pasted image 20260824112614.png]]Task의 종류에 맞게 아키텍쳐를 다르게 적용했다. 아래의 classification 부터 보면, Point Transformer Block에 추가로 Transition Down/Up 블록과 Global AvgPooling 블록이 붙은 것을 볼 수 있다. 이를 이용해 Residual 네트워크를 구성한다. 
+![[Pasted image 20260824112736.png]]
+위 두 블록의 목표는 
