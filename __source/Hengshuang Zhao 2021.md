@@ -37,6 +37,8 @@ Vector attention의 일반형(Eq. 2)을 point cloud에 맞게 고친 것이 Eq. 
 ![[Pasted image 20260824112257.png|214]]
 위 그림과 같이 residual한 연결을 사용한다. 입력, 출력으로 $(x, p)$를 모두 받기 때문에 이 블록은 포인트의 feature와 위치를 모두 활용한다고 볼 수 있다.
 ### Network Architecture
-![[Pasted image 20260824112614.png]]Task의 종류에 맞게 아키텍쳐를 다르게 적용했다. 아래의 classification 부터 보면, Point Transformer Block에 추가로 Transition Down/Up 블록과 Global AvgPooling 블록이 붙은 것을 볼 수 있다. 이를 이용해 Residual 네트워크를 구성한다. 
+![[Pasted image 20260824112614.png]]Task의 종류에 맞게 아키텍쳐를 다르게 적용했다. 두 구조 모두 5개의 블록을 통과시켜 일종의 feature encoder를 구성한다. 이후엔 task에 따라 달라지게 되는데, Point Transformer Block에 추가로 Transition Down/Up 블록과 Global AvgPooling 블록이 있는 것을 볼 수 있다. 
 ![[Pasted image 20260824112736.png]]
-위 두 블록의 목표는 
+위 두 블록의 목표는 2D CNN의 계층적 구조를 구현하는 것이다. 2D CNN에선 Conv, Pooling을 이용해 채널의 수를 깊게 만들었다가 다시 얕게(원본 이미지는 3채널로 얕음) 만들어 계층적으로 특징을 추출할 수 있었다. Point cloud에선 conv, pooling이 불가능(irregular 한 데이터기 때문)하므로 이 역할을 transition down/up block에 맡긴다.
+- Transition Down: 점의 수를 1/4로 줄이고(FPS 이용), kNN을 수행해 각 점의 이웃을 선택한다. 이웃들의 feature를 MLP 통과시켜 채널 수가 증가된 feature로 바꾸고, 채널 축으로 max pooling을 해 이웃들의 정보가 담기면서도 채널 수가 증가된 하나의 feature를 얻는다. $\rightarrow$ 점의 수는 감소, 채널 수는 증가
+- Transition Up: 이 블록은 segmentation task를 위해 설계된 U-Net 구조에서 필요하다. 
