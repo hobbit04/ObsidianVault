@@ -29,3 +29,4 @@ Vector attention의 일반형(Eq. 2)을 point cloud에 맞게 고친 것이 Eq. 
 다이어그램으로 나타내면 아래와 같다. ![[Pasted image 20260823205854.png]]
 
 이 layer는 단독으로 쓰이지 않고 residual block 안에 들어간다.$$x \to \text{linear} \to \text{PT layer} \to \text{linear} \to (+\,x)$$따라서 $y_i$는 블록의 최종 출력이 아니라 residual branch의 출력이다.
+### Position Encoding
