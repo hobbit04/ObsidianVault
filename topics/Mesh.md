@@ -2,6 +2,7 @@
 tags:
   - 3D
   - ComputerVision
+  - 3D_Representation
 ---
 Mesh는 [[Point Cloud]]에 면을 부여한 표현이다. Mesh의 representation은 여러가지가 있지만, 가장 널리 사용되는 방법은 Face-vertex meshes이다.
 
@@ -34,7 +35,6 @@ Vertex나 face에 좌표 외의 정보를 붙일 수 있다.
 - **Genus**: 구멍의 개수. 
 
 ## 획득 방법
-
 크게 두 갈래다. 점을 **직접 잇는** 방식과, 점을 **함수로 바꾼 뒤 등위면을 뽑는** 방식이다.
 
 | 경로                                                   | 방법                                                 | 성격                                    |
@@ -43,13 +43,6 @@ Vertex나 face에 좌표 외의 정보를 붙일 수 있다.
 | [[Point Cloud]] → Mesh                               | [[Poisson surface reconstruction]] ([[Normal]] 필수) | 함수화 후 등위면 추출. 노이즈에 강하고 항상 watertight  |
 | [[Voxel]] / [[Signed Distance Function\|SDF]] → Mesh | **[[Marching Cubes]]**                             | implicit에서 explicit으로 넘어오는 표준 통로      |
 | 직접 제작                                                | CAD, 3D 모델링 툴                                      | artist-created mesh. 면 수가 적고 quad 위주  |
-
-Poisson에서 [[Normal]]이 필수인 이유는 방법 자체가 normal 벡터장 $\mathbf{V}$를 gradient로 갖는 함수 $\chi$를 찾는 문제이기 때문이다. $\nabla\chi = \mathbf{V}$ 양변에 divergence를 취하면 $\Delta\chi = \nabla\cdot\mathbf{V}$ 라는 Poisson 방정식이 되고, 이름도 여기서 나왔다. 이때 normal의 부호가 일관되어야 안팎이 제대로 구분된다.
-
-항상 watertight라는 점은 장점이자 함정이다. 관측되지 않은 영역까지 그럴듯하게 메워버리므로, 재구성 결과를 평가할 때 주의해야 한다.
-
-**Artist-created mesh는 재구성 mesh와 질적으로 다르다.** 재구성 결과가 균일한 작은 삼각형 수백만 개라면, 아티스트 mesh는 수천 개의 quad로 형상을 요약하고 edge가 특징선을 따라 흐른다(edge flow). 
-
 파일 포맷은 `.obj`, `.ply`, `.stl`, `.glb` 등이 쓰인다.
 
 ## 표현으로서의 특징

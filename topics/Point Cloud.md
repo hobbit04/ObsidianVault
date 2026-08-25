@@ -90,7 +90,7 @@ $W\times H\times3$ 을 flatten하면 $n\times3$ point cloud가 되지만(이때 
 - **[[F-score]]: 특정 임계값 이내로 맞은 점의 비율
 
 ## 딥러닝 적용의 어려움
-Point Cloud는 '60년대 레이저 거리측정 기술에서 기원했고, LiDAR의 발전과 함께 80년대 이후 본격적으로 활용되기 시작했다. 당시엔 딥러닝이 아니라 computational geometry 기반으로 처리하던 데이터였다. 이후 2010년에 Point Cloud Library라는 point cloud 처리를 위한 오픈소스 라이브러리가 등장하며 feature descriptor, segmentation, filtering 알고리즘들이 정립되었다. 이 시기까지 point cloud는 hand-crafted feature + 기하학 알고리즘의 조합으로 다뤄졌다.
+Point Cloud는 '60년대 레이저 거리측정 기술에서 기원했고, LiDAR의 발전과 함께 '80년대 이후 본격적으로 활용되기 시작했다. 당시엔 딥러닝이 아니라 computational geometry 기반으로 처리하던 데이터였다. 이후 2010년에 Point Cloud Library라는 point cloud 처리를 위한 오픈소스 라이브러리가 등장하며 feature descriptor, segmentation, filtering 알고리즘들이 정립되었다. 이 시기까지 point cloud는 hand-crafted feature + 기하학 알고리즘의 조합으로 다뤄졌다.
 [[Johannes L. Schonberger 2016]]의 COLMAP은 딥러닝 없이 기하학적 최적화만으로 point cloud를 만들어내는 대표적인 사례다(SfM 단계에서 sparse point cloud와 카메라 파라미터를, MVS 단계에서 dense point cloud를 출력한다).
 
 Point cloud를 딥러닝의 대상으로 직접 다루지 못한 이유는 크게 두 가지다.
@@ -110,7 +110,3 @@ Point cloud가 irregular 하다는 것은 이러한 구조가 없다는 것이�
 두 가지 문제를 갖고 있는 point cloud에 딥러닝을 적용시키기 위해 여러 우회 방법들이 제시됐었다. [[Voxel]]로 변환한 다음 3D CNN을 적용하는 방법, 3D point cloud를 이용해 여러 각도에서 2D로 렌더링한 후 2D CNN으로 처리하는 방법 등이 그 예시다. 
 ### 딥러닝 도입
 이러한 변환 없이 딥러닝의 input으로 쓸 수 있는 방법을 고안한 논문이 [[Charles R. Qi 2017|PointNet]]이다.
-
-## 이후 연결
-- [[3D Gaussian Splatting]]은 각 점에 공분산, 불투명도, SH 계수를 붙인 point cloud로 볼 수 있다. 초기화도 COLMAP의 sparse point cloud를 사용한다.
-- Point cloud의 한계(connectivity 없음)를 메우는 표현이 [[Mesh]]이고, 그 변환을 위해 normal이 필요하다.

@@ -14,7 +14,7 @@ $$f(x)=
 
 $d(x, \partial \Omega)$는 위치 $x$에서 표면까지의 최단 거리를 의미하고, 부호는 물체 내부 점인 경우 음수(-), 외부 점인 경우 양수(+)로 결정된다. 
 
-그 이유는 이렇게 해야 SDF의 gradient 방향이 surface 바깥을 향하기 때문이다. 게다가 거리 함수이기 때문에 gradient의 크기도 모든 위치에서 1이다([[Eikonal equation]]). 두 결과가 합쳐지면 SDF의 gradient가 곧 표면의 [[Normal]]이라는 결론을 얻을 수 있다. 
+그 이유는 이렇게 해야 SDF의 gradient 방향이 surface 바깥을 향하기 때문이다. 게다가 거리 함수이기 때문에 gradient의 크기도 모든 위치에서 1이다([[Eikonal equation]]). 두 결과가 합쳐지면 표면에서 SDF의 gradient가 곧 표면의 [[Normal]]이라는 결론을 얻을 수 있다. 
 
 ## 성질
 - 연속 공간에서 미분 가능. [[Voxel]]의 이산화 한계를 극복한다. 
