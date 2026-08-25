@@ -2,6 +2,7 @@
 tags:
   - 3D
   - ComputerVision
+  - 3D_Representation
 ---
 3차원 공간상의 점들을 모아놓은 집합으로 3D 데이터를 표현하는 방식이다. 가장 단순하고, 센서나 [[Structure from Motion|SfM]] 파이프라인이 가장 먼저 만들어내는 형태이기 때문에 다른 모든 3D 표현의 출발점이자 공통 인터페이스 역할을 한다.
 
