@@ -45,3 +45,8 @@ Attention 패턴이 각 상황에서 어떻게 형성될지 생각해보자. 우
 반면 전혀 관련 없는 패치들만 있다면, 모두 균등하게 낮은 값이 나올 것이다. 이러면 높은 엔트로피가 계산될 것이다.
 >만약 이미지 전체가 latent와 높은 연관성을 갖는다면? 엔트로피는 높게 나올텐데 중요한 view로 봐야할텐데?
 
+엔트로피는 다음과 같이 정의 된다. $$H_i(l)=-\frac{1}{\log P}\sum_{p=1}^P\hat{a}_{i,l}^{(p)}\log \hat{a}_{i,l}^{(p)}$$이때 $i$는 view point, $P$는 이미지 패치 토큰, $\hat{a}_{i,l} \in \mathbb{R}^P$는 어텐션 가중치이다. 이 엔트로피를 이용해서 가중치는 다음과 같이 정의된다. 
+$$w_i^{\text{ent}}(l)=\frac{\exp(-\alpha \cdot H_i(l))}{\sum_{j=1}^N\exp(-\alpha \cdot H_j(l))}$$
+여기서 $\alpha$는 temperature parameter다. 
+
+### Visibility Weighting
