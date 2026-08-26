@@ -18,5 +18,5 @@ SAM3D: 하나의 이미지와 segmentation masks를 이용해 각 object의 3d �
 - [[Jianfeng Xiang 2025]]
 
 ## Method
-
+먼저 SAM3D에서 어떻게 처리했는지를 알아야 한다. 
 
