@@ -1,3 +1,6 @@
+SAM3D.pdf, https://arxiv.org/pdf/2511.16624
+MultiDiffusion.pdf, https://arxiv.org/pdf/2302.08113
+TRELLIS.pdf, https://arxiv.org/pdf/2412.01506
 MV-SAM3D.pdf, https://arxiv.org/abs/2603.11633
 3DShape2VecSet.pdf, https://arxiv.org/pdf/2301.11445
 3DGS.pdf, https://arxiv.org/pdf/2308.04079
