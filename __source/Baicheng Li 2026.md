@@ -50,3 +50,16 @@ $$w_i^{\text{ent}}(l)=\frac{\exp(-\alpha \cdot H_i(l))}{\sum_{j=1}^N\exp(-\alpha
 여기서 $\alpha$는 temperature parameter다. 
 
 ### Visibility Weighting
+위의 attention-entropy는 결국 모델이 implicit하게 연관성을 배우는 것이라 비슷하지만 다른 위치에 있는 물체가 view에 포함되는 경우 등의 상황에선 오작동할 수 있다. 
+Explicit한 가중치가 필요한 이유고, 이는 Sparse Structure Generation 단계에서 생성된 [[Voxel]]구조 $\mathcal{V}$를 이용한다. [[DDA ray tracing]]기법을 사용해 $V\in\{0, 1\}^{N\times K}$ 를 생성한다. 이때 $V_{i,l}=1$이라는 것은 $i$번째 view point에서 $l$ latent가 보인다는 뜻이다. 이를 이용해서 가중치는 다음과 같이 정의된다. $$w_i^{\text{vis}}(l)=\frac{\exp(\beta \cdot V_{i,l})}{\sum_{j=1}^N\exp(\beta\cdot V_{j,l})}$$여기서 $\beta$는 occlusion을 얼마나 패널티 줄지를 결정하는 값이다. 
+
+최종적으로는 두 가중치를 $\gamma$ 비율로 섞어서 사용한다.
+
+## Physics-Aware Pose Estimation
+Adaptive multi-view fusion 과정에서 각 object 별로 pose를 추정할 수는 있지만, 합쳐놓고 보면 서로 겹치거나 공중에 떠 있는 등 물리적으로 불가능한 scene이 나오는 경우가 많다. 이를 해결하기 위해 도입한 두 가지 방법을 소개한다.
+
+### Layout Injection
+Flow matching 과정 후반부터 주기적으로 디코더를 돌려 voxel occupancy를 얻는다. 이를 이용해 $\mathcal{L}_{\text{collision}}, \mathcal{L}_{\text{contact}}$ 를 계산하고 둘의 가중합으로 정의된 $\mathcal{L}_{\text{phys}}$를 얻는다. 이후 flow matching 과정에 gradient 항으로써 추가한다. $$x_t+\Delta t=x_t + v_\theta(x_t,t,c) \cdot \Delta t-\eta \nabla_{x_t} \mathcal{L}_\text{phys}$$논문에 정확한 collision, contact loss 수식은 나와 있지 않다.
+
+### Post-Generation Pose Refinement
+위의 과정은 생성(flow matching) 중간에 일어나는 일이었고, 이 과정은 모든 object가 생성된 후에 진행하는 교정 과정이다. 
