@@ -62,4 +62,7 @@ Adaptive multi-view fusion 과정에서 각 object 별로 pose를 추정할 수�
 Flow matching 과정 후반부터 주기적으로 디코더를 돌려 voxel occupancy를 얻는다. 이를 이용해 $\mathcal{L}_{\text{collision}}, \mathcal{L}_{\text{contact}}$ 를 계산하고 둘의 가중합으로 정의된 $\mathcal{L}_{\text{phys}}$를 얻는다. 이후 flow matching 과정에 gradient 항으로써 추가한다. $$x_t+\Delta t=x_t + v_\theta(x_t,t,c) \cdot \Delta t-\eta \nabla_{x_t} \mathcal{L}_\text{phys}$$논문에 정확한 collision, contact loss 수식은 나와 있지 않다.
 
 ### Post-Generation Pose Refinement
-위의 과정은 생성(flow matching) 중간에 일어나는 일이었고, 이 과정은 모든 object가 생성된 후에 진행하는 교정 과정이다. 
+위의 과정은 생성(flow matching) 중간에 일어나는 일이었고, 이 과정은 모든 object가 생성된 후에 진행하는 교정 과정이다. Output [[Mesh]]에 대해서 global pose refinement를 수행한다. 이때 각 오브젝트마다 similarity transform $\theta_k(s_k,R_k,t_k)$를 정의하고 이를 최적화한다. 
+$$\mathcal{L}_{\text{total}} = \sum_k \mathcal{L}_{\text{align}}^{(k)} + \lambda_{\text{col}} \sum_{j \neq k} \mathcal{L}_{\text{col}}^{(j,k)} + \lambda_{\text{con}} \sum_{j \neq k} \mathcal{L}_{\text{con}}^{(j,k)} + \lambda_{\text{reg}} \mathcal{L}_{\text{reg}}$$
+역시, 각 loss에 대한 수식은 나와 있지 않다. 
+## Experiments
