@@ -22,4 +22,12 @@ Mask를 얻는 과정은 SAM2와 SAM3를 사용했고 depthmap은 DA3로 생성�
 
 - Masking: SAM3. 텍스트 프롬프트로는 `leather bifold wallet`, `wristwatch with strap`를 사용했다. 단순히 `watch`로 하니 시계의 다이얼 부분만 잡히는 것을 확인하고 수정한 프롬프트다. ![[mask_check_scene2.png]]해당 환경에서 SAM2를 이용해 마스킹을 하면 다음과 같이 나왔다(배경의 어두운 정도는 시각화 할 때 수정한 것). ![[Pasted image 20260901143931.png]]지갑을 못잡을 때도 있고 시계의 다이얼만 선택됨.
 - DA3의 결과 중 pointmap. ![[Pasted image 20260901144057.png]]
-이때도 OOM이 떴다. 
+이때도 MV-SAM3D의 과정 중 두번째 object인 watch를 생성하는 중에 OOM이 떴다. 합쳐진 형태의 scene을 얻지 못해 뷰를 세개로 줄이기로 했다.
+## 네 번째 실험(`scene2_3v`)
+동일한 상황에서 view만 세개로 줄였더니 oom이 뜨긴 떴지만, 물체 별 구조 생성 이후 pose_optimization 단계에서 떴다. 
+- 최종 생성 결과. ![[Pasted image 20260901160852.png|538]]
+  몇 가지 문제가 있다. 일단 지갑이 제대로 생성되지 않았다(4-view에선 꽤 잘 됐음). 위 사진은 da3로 만든 pointmap 과 합쳐진 결과를 보여주는 건데, 시계의 위치가 서로 꽤 많이 틀어졌다.![[Pasted image 20260901161024.png]]OOM이 발생해 처리되지 못한 Pose Refinement 가 이뤄진다면 개선될 수 있을 것으로 보인다. 
+## 결론
+- 3-view로는 각 object의 기하가 잘 복원되지 않는 것을 확인했다. 시계처럼 평면에 가까운 물체는 잘 됐지만 지갑의 경우 크게 잘못됐다.
+- 논문의 실험은 `A100(80 GB) GPU`로 실행됐다. 클로드에 의하면 순서대로 물체를 처리하면서 모든 물체의 결과가 V-RAM에 저장되고 있다는데, 이게 메모리를 많이 잡아 먹었다. 여러 gpu를 활용할 수 있는 방법이나 V-RAM의 부담을 덜 수 있는 방법이 필요해보인다. 
+- SAM2와 SAM3의 성능 차이가 크게 난다. 그리고 SAM2는 비디오 segmentation을 가정하고 있어서, 이 task처럼 최대한 다양한 시점에서 촬영을 하게 하면 frame consistency가 사라져 segmentation 능력이 더 떨어진다. 반면 SAM3는 텍스트 기반으로 매 프레임을 segmentation 하기 때문에 성능도 더 좋고 이 task에도 더 적합하다. 

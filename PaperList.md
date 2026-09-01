@@ -1,3 +1,5 @@
+Lift4D.pdf, https://arxiv.org/pdf/2606.23688
+V-DPM.pdf, https://arxiv.org/pdf/2601.09499
 SAM3D.pdf, https://arxiv.org/pdf/2511.16624
 MultiDiffusion.pdf, https://arxiv.org/pdf/2302.08113
 TRELLIS.pdf, https://arxiv.org/pdf/2412.01506
