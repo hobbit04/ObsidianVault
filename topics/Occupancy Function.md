@@ -13,4 +13,4 @@ tags:
 Occupancy function은 gradient 등은 이용하기 어렵지만(binary의 경우) 메모리를 적게 차지하고 단순하다는 장점을 가진다. 
 
 ### Neural Occupancy
-[[Lars Mescheder 2019]]에서 제시된 방법이 대표적으로, 신경망이 함수 $o(x)$를 직접 학습하도록 하는 방법이다. 
+[[Occupancy Networks]]에서 제시된 방법이 대표적으로, 신경망이 함수 $o(x)$를 직접 학습하도록 하는 방법이다. 

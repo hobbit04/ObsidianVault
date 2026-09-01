@@ -44,7 +44,7 @@ $$
 2. 모든 Query $x$에 대해 모든 face까지의 최단거리 중 최솟값을 구함
 3. 부호를 판정하기 위해 Ray stabbing, [[Normal]]이용, Generalized Winding Number 등의 기법 활용
 
-Query를 잘 고르기 위한 방법으로는 [[Jeong Joon Park 2019|DeepSDF]] 에서 제안한 방법이 관행이다. 
+Query를 잘 고르기 위한 방법으로는 [[DeepSDF]] 에서 제안한 방법이 관행이다. 
 - 표면에서 균일 샘플 후 **가우시안 노이즈로 perturb** (보통  두 스케일 혼합) — 약 95%
 - 나머지는 **unit sphere 내 uniform** — 전역 구조 학습용
 - 이유: 정보량이 표면 근처에 집중되어 있고, 먼 영역은 값이 뻔하기 때문

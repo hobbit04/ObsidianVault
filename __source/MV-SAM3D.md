@@ -1,9 +1,23 @@
 ---
-Title: |-
-  MV-SAM3D: Adaptive Multi-View Fusion for
-  Layout-Aware 3D Generation
-School:
+title: "MV-SAM3D: Adaptive Multi-View Fusion for Layout-Aware 3D Generation"
+aliases:
+  - Li 2026
+  - "MV-SAM3D: Adaptive Multi-View Fusion for Layout-Aware 3D Generation"
+first_author: Baicheng Li
+year: 2026
+venue: 
+school:
   - Peking University
+kind: method
+task:
+  - 3D generation
+  - multi-view fusion
+  - scene layout
+code: 
+status: read
+pdf: "[[MV-SAM3D.pdf]]"
+tags:
+  - paper
 ---
 [[MV-SAM3D.pdf]]
 
@@ -15,7 +29,7 @@ SAM3D: 하나의 이미지와 segmentation masks를 이용해 각 object의 3d �
 위 문제점들을 해결하기 위해 SAM3D를 확장한 논문이다.
 
 ## Related work
-- [[Jianfeng Xiang 2025]]
+- [[TRELLIS]]
 
 ## Method
 먼저 SAM3D에서 어떻게 처리했는지를 알아야 한다. 

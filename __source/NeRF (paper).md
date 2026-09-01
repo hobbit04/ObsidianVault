@@ -1,11 +1,25 @@
 ---
-Conference: ECCV
-School:
+title: "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis"
+aliases:
+  - Mildenhall 2020
+  - "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis"
+first_author: Ben Mildenhall
+year: 2020
+venue: ECCV
+school:
   - UC Berkeley
   - UC San Diego
-Lab:
+lab:
   - Google Research
-Title: "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis"
+kind: method
+task:
+  - novel view synthesis
+  - 3D representation
+code: https://github.com/bmild/nerf
+status: read
+pdf: "[[NeRF.pdf]]"
+tags:
+  - paper
 ---
 [[NeRF.pdf]]
 

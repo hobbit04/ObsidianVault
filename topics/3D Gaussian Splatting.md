@@ -3,7 +3,7 @@ tags:
   - 3D
   - ComputerVision
 ---
-Paper: [[Bernhard Kerbl 2023]]
+Paper: [[3DGS]]
 Demo: https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/
 참고 자료: https://mole-starseeker.tistory.com/158
 
@@ -24,7 +24,7 @@ Demo: https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/
 ### $\mu$, 중심위치
 말 그대로 3차원 상의 위치를 의미한다. 그럼 어떤 위치에 물체가 있는지 어떻게 알고 해당 위치를 특정할 수 있을까? 일단 점을 찍어야, 그 주변에 가우시안 분포를 그리든 할 수 있을테니 말이다. 
 
-논문에선 [[Johannes L. Schonberger 2016]]의 COLMAP을 활용한다. COLMAP은 결과물로 카메라 pose와 sparse [[Point Cloud]]를 출력한다. 이때 하나의 point가 하나의 가우시안으로 대응되는 것이다. COLMAP 덕분에 3DGS는 사진들만을 이용해 결과물을 만들 수 있다(pose도 loss 정의를 위해 필요함). 
+논문에선 [[COLMAP]]의 COLMAP을 활용한다. COLMAP은 결과물로 카메라 pose와 sparse [[Point Cloud]]를 출력한다. 이때 하나의 point가 하나의 가우시안으로 대응되는 것이다. COLMAP 덕분에 3DGS는 사진들만을 이용해 결과물을 만들 수 있다(pose도 loss 정의를 위해 필요함). 
 ### $\Sigma$
 3차원 가우시안의 모양을 살펴보자.
 ![[Pasted image 20260822231556.png]]

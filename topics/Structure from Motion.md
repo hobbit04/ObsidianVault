@@ -7,11 +7,11 @@ tags:
 
 [[Epipolar Geometry]]와 유사하다고 볼 수 있으며 이를 이미지 2 장이 아닌 수백~수만 장으로 확장한 것이다.
 
-이를 다루는 방식은 크게 세 가지가 있다([[Johannes L. Schonberger 2016|COLMAP]]).
+이를 다루는 방식은 크게 세 가지가 있다([[COLMAP]]).
 1. **Incremental**: 가장 널리 사용되는 방식
 2. Hierarchical
 3. Global approaches
-2016년의 논문 [[Johannes L. Schonberger 2016|COLMAP]]에서는 새로운 방식인 COLMAP을 제시했다. 
+2016년의 논문 [[COLMAP]]에서는 새로운 방식인 COLMAP을 제시했다. 
 
 기본적으로 Incremental 방식의 SfM은 아래와 같은 단계를 거친다.
 ## Correspondence Search
@@ -24,7 +24,7 @@ tags:
 **Geometric Verification**
 $\mathcal{C}$를 검증하는 단계이다. [[RANSAC]] 등의 방법을 이용할 수 있으며 이 단계의 최종 결과는 scene graph라고 하는, 이미지를 노드로 하고 같은 scene이 나타난 것으로 확인된 쌍을 엣지로 연결한 그래프가 된다. 
 ## Incremental Reconstruction
-*이 단계에서 개선된 해결 방법을 제시한 논문이 [[Johannes L. Schonberger 2016]] 이다.* 
+*이 단계에서 개선된 해결 방법을 제시한 논문이 [[COLMAP]] 이다.* 
 
 **Initialization**
 Two-view reconstruction 방식을 이용할 때 적절한 초기 pair를 선택하는 것이 중요하다. 이미지 그래프에서 연결의 밀도가 높은 지점에서 시작하는 것이 보통 정확한 결과로 이어진다. 

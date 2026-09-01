@@ -3,7 +3,7 @@ tags:
   - 3D
   - ComputerVision
 ---
-Paper: [[Ben Mildenhall 2020]]
+Paper: [[NeRF (paper)]]
 
 Neural Radiance Fields의 약자로, Novel View Synthesis를 해결하기 위해 MLP를 사용하는 방법이다. 3D model reconstruction을 해결하려는 것이 아니다. 크게 *Scene을 표현하는 방법* 과 *렌더링 방법* 두 단계에서 설명이 필요하다.
 ## Scene의 표현 방법
@@ -21,7 +21,7 @@ Rendering을 한다는 것은 결국 각 위치에 어떤 색을 보여줄지 �
 
 각 픽셀 위치에서 $C(r)$을 구하는 것으로 렌더링은 끝이지만, 효과적인 렌더링을 위해 논문에선 두 가지 변형을 주었다.
 ### Positional Encoding(PE)
-문제 상황: 신경망은 근본적으로 high-frequency 표현에 약하다([[Nasim Rahaman 2019]]).
+문제 상황: 신경망은 근본적으로 high-frequency 표현에 약하다([[Spectral Bias]]).
 해결 방법: low-to-high frequency로 표현을 바꾸자.
 
 논문에선 이를 위해 PE를 사용한다. $$\gamma(p)=(\sin(2^0\pi p),\cos (2^0\pi p),...,\sin(2^{L-1}\pi p), \cos(2^{L-1}\pi p))$$하나의 입력 $p$에 대해서, $2L$ 차원의 공간으로 매핑을 한다. 이때 입력은 위치 $x=(x, y, z)$, $d=(d_x, d_y, d_z)$ 각각이 될 것이고 6개의 숫자를 따로따로 매핑 하는 것이다. $L$은 주파수 대역 수를 결정하는 파라미터로, $x$에 대해서는 $L=10$, $d$에 대해서는 $L=4$를 사용했다고 한다. 위치는 조금만 바뀌어도 픽셀 값이 크게 바뀔 수 있지만, 해당 위치를 조금 다른 각도에서 본다고 픽셀 값이 크게 바뀌지는 않을 것이다. 따라서 위치를 표현할 때 더 고주파 신호를 사용한 것이다. 
@@ -36,11 +36,11 @@ Rendering을 한다는 것은 결국 각 위치에 어떤 색을 보여줄지 �
 이 확률 밀도 함수를 기반으로, fine 네트워크는 128개의 샘플을 추출해 $\hat{C}_f(r)$이라는 예측값을 내놓는다. 이때 coarse 학습에 사용했던 64개의 샘플도 함께 이용해 총 192개의 샘플을 이용한다. 이후 손실을 계산할 때는 $$L=||\hat{C}_c(r)-C||^2_2+||\hat{C}_f(r)-C||^2_2$$과 같이, 두 네트워크에서의 오차의 합을 이용한다. 
 
 ## Implementation details
-사진과 그에 해당하는 카메라 정보를 얻기 위해 [[Johannes L. Schonberger 2016]]의 COLMAP을 이용했다. 
+사진과 그에 해당하는 카메라 정보를 얻기 위해 [[COLMAP]]의 COLMAP을 이용했다. 
 
 ## 다른 방법들과의 차이점
 [[Signed Distance Function]], [[Occupancy Function]] 등의 방법에서는 표면이 정의 되고, 각 위치에서 표면과의 관계(가까운지, 혹은 안쪽인지 등)를 output으로 내놓았다. 그래서 색을 입히려면 별도의 텍스쳐와 조명 모델이 필요했는데, NeRF의 모델은 $c$ 까지 output 해 자체적으로 색을 표현할 수 있다. 
 
 위에서 살짝 언급했듯이, NeRF에서는 표면이 정의되지 않는다. Volume으로 문제를 해결하기 때문에 안개나 머리카락처럼 경계를 정의하기 어려운 scene을 표현하는데 유리하고, watertight 해야 한다는 전제가 필요 없어진다는 장점이 생긴다. 반면 표면이 어딘지가 중요한 task에서는 NeRF를 활용하기 어려울 것이다. 
 
-마지막으로, NeRF는 3D 형상에 대한 ground truth가 필요하지 않다. 여러 시점에서 촬영된 2D 이미지와 그에 대응하는 카메라 포즈(COLMAP 이용)만 있으면 학습이 된다. [[Jeong Joon Park 2019|DeepSDF]] 등의 방법에서는 3D GT가 필요하다. 
+마지막으로, NeRF는 3D 형상에 대한 ground truth가 필요하지 않다. 여러 시점에서 촬영된 2D 이미지와 그에 대응하는 카메라 포즈(COLMAP 이용)만 있으면 학습이 된다. [[DeepSDF]] 등의 방법에서는 3D GT가 필요하다. 

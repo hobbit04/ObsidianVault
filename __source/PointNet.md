@@ -1,8 +1,23 @@
 ---
-Title: "PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation"
-Conference: CVPR
-School:
+title: "PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation"
+aliases:
+  - Qi 2017
+  - "PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation"
+first_author: Charles R. Qi
+year: 2017
+venue: CVPR
+school:
   - Stanford University
+kind: method
+task:
+  - point cloud
+  - classification
+  - segmentation
+code: https://github.com/charlesq34/pointnet
+status: queued
+pdf: "[[PointNet.pdf]]"
+tags:
+  - paper
 ---
 [[PointNet.pdf]]
 

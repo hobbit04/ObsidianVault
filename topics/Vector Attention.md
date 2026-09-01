@@ -7,7 +7,7 @@ tags:
 
 > **한 줄 정의**: 이웃 하나당 가중치를 **스칼라 1개**가 아니라 **채널 수만큼의 벡터**로 만들어서, feature의 채널마다 서로 다른 이웃을 참조하게 하는 어텐션.
 
-[[__source/Hengshuang Zhao 2021|Point Transformer]]에서 [[Point Cloud]]를 처리하기 위해 채택한 방식이다. 원래는 같은 저자의 이미지 논문(SAN, *Exploring Self-attention for Image Recognition*)에서 제안된 개념이다.
+[[Point Transformer]]에서 [[Point Cloud]]를 처리하기 위해 채택한 방식이다. 원래는 같은 저자의 이미지 논문(SAN, *Exploring Self-attention for Image Recognition*)에서 제안된 개념이다.
 
 ---
 

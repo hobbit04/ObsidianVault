@@ -63,17 +63,17 @@ Sparse인지 dense인지가 이후 쓰임새를 가른다. Sparse point cloud는
 - 노이즈와 outlier가 섞여 있다.
 - Monocular 기반으로 얻은 경우 절대 scale을 알 수 없다.
 
-## [[Shuzhe Wang 2024|Pointmap]]과의 비교
-[[Shuzhe Wang 2024|DUSt3R]]의 pointmap $X \in \mathbb{R}^{W \times H \times 3}$ 은 뒤의 3이 point cloud와 똑같이 XYZ이지만, 앞 차원이 이미지 격자다.
+## [[DUSt3R|Pointmap]]과의 비교
+[[DUSt3R]]의 pointmap $X \in \mathbb{R}^{W \times H \times 3}$ 은 뒤의 3이 point cloud와 똑같이 XYZ이지만, 앞 차원이 이미지 격자다.
 
 | | Point cloud $n\times3$ | Pointmap $W\times H\times3$ |
 | --- | --- | --- |
 | 구조 | 없음 (unordered, irregular) | 이미지 격자에 정렬됨 |
 | 순서의 의미 | 없음 | 있음 (픽셀 대응 관계) |
 | CNN/ViT 적용 | 불가 | **가능** |
-| 필요한 구조 | [[Charles R. Qi 2017\|PointNet]] 같은 특수 설계 | 기존 2D 백본 그대로 |
+| 필요한 구조 | [[PointNet]] 같은 특수 설계 | 기존 2D 백본 그대로 |
 
-즉 **pointmap은 구조를 가진 point cloud**다. 아래에서 설명할 "irregular해서 CNN을 쓸 수 없다"는 문제를, pointmap은 격자 구조를 유지함으로써 우회한다. DUSt3R나 [[Jianyuan Wang 2025|VGGT]]가 ViT로 3D 좌표를 직접 회귀할 수 있는 이유가 여기에 있다.
+즉 **pointmap은 구조를 가진 point cloud**다. 아래에서 설명할 "irregular해서 CNN을 쓸 수 없다"는 문제를, pointmap은 격자 구조를 유지함으로써 우회한다. DUSt3R나 [[VGGT]]가 ViT로 3D 좌표를 직접 회귀할 수 있는 이유가 여기에 있다.
 
 $W\times H\times3$ 을 flatten하면 $n\times3$ point cloud가 되지만(이때 픽셀 이웃 관계라는 정보를 잃는다), 그 역방향은 카메라 정보 없이는 불가능하다.
 
@@ -91,7 +91,7 @@ $W\times H\times3$ 을 flatten하면 $n\times3$ point cloud가 되지만(이때 
 
 ## 딥러닝 적용의 어려움
 Point Cloud는 '60년대 레이저 거리측정 기술에서 기원했고, LiDAR의 발전과 함께 '80년대 이후 본격적으로 활용되기 시작했다. 당시엔 딥러닝이 아니라 computational geometry 기반으로 처리하던 데이터였다. 이후 2010년에 Point Cloud Library라는 point cloud 처리를 위한 오픈소스 라이브러리가 등장하며 feature descriptor, segmentation, filtering 알고리즘들이 정립되었다. 이 시기까지 point cloud는 hand-crafted feature + 기하학 알고리즘의 조합으로 다뤄졌다.
-[[Johannes L. Schonberger 2016]]의 COLMAP은 딥러닝 없이 기하학적 최적화만으로 point cloud를 만들어내는 대표적인 사례다(SfM 단계에서 sparse point cloud와 카메라 파라미터를, MVS 단계에서 dense point cloud를 출력한다).
+[[COLMAP]]의 COLMAP은 딥러닝 없이 기하학적 최적화만으로 point cloud를 만들어내는 대표적인 사례다(SfM 단계에서 sparse point cloud와 카메라 파라미터를, MVS 단계에서 dense point cloud를 출력한다).
 
 Point cloud를 딥러닝의 대상으로 직접 다루지 못한 이유는 크게 두 가지다.
 1. Unordered
@@ -109,4 +109,4 @@ Point cloud가 irregular 하다는 것은 이러한 구조가 없다는 것이�
 ### 우회 방법
 두 가지 문제를 갖고 있는 point cloud에 딥러닝을 적용시키기 위해 여러 우회 방법들이 제시됐었다. [[Voxel]]로 변환한 다음 3D CNN을 적용하는 방법, 3D point cloud를 이용해 여러 각도에서 2D로 렌더링한 후 2D CNN으로 처리하는 방법 등이 그 예시다. 
 ### 딥러닝 도입
-이러한 변환 없이 딥러닝의 input으로 쓸 수 있는 방법을 고안한 논문이 [[Charles R. Qi 2017|PointNet]]이다.
+이러한 변환 없이 딥러닝의 input으로 쓸 수 있는 방법을 고안한 논문이 [[PointNet]]이다.

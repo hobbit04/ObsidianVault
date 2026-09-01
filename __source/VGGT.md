@@ -1,12 +1,30 @@
 ---
-Conference: CVPR
-Title: "VGGT: Visual Geometry Grounded Transformer"
-School: University of Oxford
-Lab: Meta AI
+title: "VGGT: Visual Geometry Grounded Transformer"
+aliases:
+  - Wang 2025
+  - "VGGT: Visual Geometry Grounded Transformer"
+first_author: Jianyuan Wang
+year: 2025
+venue: CVPR
+school:
+  - University of Oxford
+lab:
+  - Meta AI
+kind: method
+task:
+  - 3D reconstruction
+  - camera pose
+  - depth estimation
+  - point tracking
+code: https://github.com/facebookresearch/vggt
+status: read
+pdf: "[[VGGT.pdf]]"
+tags:
+  - paper
 ---
 [[VGGT.pdf]]
 
-기본적으로 [[Shuzhe Wang 2024|DUSt3r]]과 같은 문제를 비슷한 방식으로 해결하려고 한다. 신경망만을 이용해 3D 카메라 정보를 알아내는 것을 목표로 한다. 이미지 두 개만 받을 수 있고 post processing 과정에서야 reconstruction을 할 수 있었던 DUSt3r이나 MASt3r의 한계를 극복한 논문이다. 
+기본적으로 [[DUSt3R]]과 같은 문제를 비슷한 방식으로 해결하려고 한다. 신경망만을 이용해 3D 카메라 정보를 알아내는 것을 목표로 한다. 이미지 두 개만 받을 수 있고 post processing 과정에서야 reconstruction을 할 수 있었던 DUSt3r이나 MASt3r의 한계를 극복한 논문이다. 
 
 ## Related work
 - [[Structure from Motion]]
@@ -45,7 +63,7 @@ Camera, depth, point map의 loss는 범위가 비슷해서 따로 weight을 다�
 $\mathcal{L}_\text{camera}=\sum_{i=1}^N ||\hat{g}_i - g_i||_\epsilon$ 로 정의된다. 수식을 보면 [[Huber loss]]를 이용해 정의된 것을 알 수 있다.
 
 **Depth loss**
-$\mathcal{L}_\text{depth}$는 [[Shuzhe Wang 2024]]과 유사하게 정의한다. 이 논문에선 불확실성(confidence로 볼 수 있음)을 표현하는 식이 $\hat{\Sigma}^D_i$이기 때문에 마지막에 $-\alpha \log \Sigma^D_i$ 항을 추가한 것이다(불확실성에는 어차피 ground truth 값이 존재하지 않기 때문에 $\hat{}$ 표기를 했다가, 안했다가 혼용하는 것 같음). 
+$\mathcal{L}_\text{depth}$는 [[DUSt3R]]과 유사하게 정의한다. 이 논문에선 불확실성(confidence로 볼 수 있음)을 표현하는 식이 $\hat{\Sigma}^D_i$이기 때문에 마지막에 $-\alpha \log \Sigma^D_i$ 항을 추가한 것이다(불확실성에는 어차피 ground truth 값이 존재하지 않기 때문에 $\hat{}$ 표기를 했다가, 안했다가 혼용하는 것 같음). 
 
 *헷갈렸는데, $\Sigma^D_i$가 i개의 D를 더하는 의미가 아니라 그냥 시그마 기호에 위첨자가 $D$ 일 뿐인 것이었다.*
 $$\mathcal{L}_\text{depth}=\sum^N_{i=1} ||\Sigma^D_i \odot (\hat{D}_i-D_i)|| + ||\Sigma^D_i \odot (\nabla \hat{D}_i - \nabla D_i)|| - \alpha \log \Sigma^D_i$$위와 같은 수식으로 정의된다. 이때 두번째 항이 DUSt3R과 다른 부분인데, 이는 gradient-based term 이다. 이런 방식은 monocular depth estimation에서 자주 사용되는 방식이라고 한다. 
