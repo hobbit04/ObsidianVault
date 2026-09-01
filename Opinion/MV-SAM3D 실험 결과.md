@@ -1,3 +1,8 @@
+---
+
+---
+[[MV-SAM3D]]
+
 기본적으로 여러 이미지가 필요하고, mask, depthmap이 준비되어야 한다.
 Mask를 얻는 과정은 SAM2와 SAM3를 사용했고 depthmap은 DA3로 생성했다.
 
