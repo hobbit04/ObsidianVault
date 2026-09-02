@@ -1,5 +1,6 @@
 ---
 title: "VGGT: Visual Geometry Grounded Transformer"
+citekey: wang2025vggt
 venue: CVPR
 school:
   - University of Oxford

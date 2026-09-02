@@ -1,5 +1,6 @@
 ---
 title: "Lift4D: Harmonizing Single-View 3D Estimation for 4D Reconstruction In-the-Wild"
+citekey: litman2026lift4d
 venue: CVPR
 school:
   - Carnegie Mellon University

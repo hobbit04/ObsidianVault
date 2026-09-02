@@ -1,5 +1,6 @@
 ---
 title: Point Transformer
+citekey: zhao2021pointtransformer
 venue: ICCV
 school:
   - University of Oxford

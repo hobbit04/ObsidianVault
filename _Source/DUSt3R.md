@@ -1,5 +1,6 @@
 ---
 title: "DUSt3R: Geometric 3D Vision Made Easy"
+citekey: wang2024dust3r
 venue: CVPR
 school:
   - Aalto University

@@ -1,5 +1,6 @@
 ---
 title: "MV-SAM3D: Adaptive Multi-View Fusion for Layout-Aware 3D Generation"
+citekey: li2026mvsam3d
 school:
   - Peking University
 tags:

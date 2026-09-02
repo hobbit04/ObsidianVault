@@ -1,4 +1,5 @@
 # Store the list of papers as its name and arXiv link. 
+# PDF 를 받은 뒤에는 bib_sync.py 를 돌려 references.bib 와 citekey 를 갱신하세요.
 # Name is the key to decide if it needs to download or not. 
 from pathlib import Path
 from requests import get

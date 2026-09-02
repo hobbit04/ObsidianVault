@@ -1,5 +1,6 @@
 ---
 title: "DeepSDF: Learning Continuous Signed Distance Functions for Shape Representation"
+citekey: park2019deepsdf
 venue: CVPR
 school:
   - University of Washington

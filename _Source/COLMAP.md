@@ -1,5 +1,6 @@
 ---
 title: Structure-from-Motion Revisited
+citekey: schonberger2016colmap
 venue: CVPR
 school:
   - University of North Carolina at Chapel Hill

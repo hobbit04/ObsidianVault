@@ -1,5 +1,6 @@
 ---
 title: "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis"
+citekey: mildenhall2020nerf
 venue: ECCV
 school:
   - UC Berkeley

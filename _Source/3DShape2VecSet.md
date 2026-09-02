@@ -1,5 +1,6 @@
 ---
 title: "3DShape2VecSet: A 3D Shape Representation for Neural Fields and Generative Diffusion Models"
+citekey: zhang20233dshape2vecset
 venue: SIGGRAPH
 school:
   - KAUST

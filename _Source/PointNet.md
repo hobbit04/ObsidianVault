@@ -1,5 +1,6 @@
 ---
 title: "PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation"
+citekey: qi2017pointnet
 venue: CVPR
 school:
   - Stanford University

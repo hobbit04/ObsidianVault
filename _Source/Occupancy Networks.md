@@ -1,5 +1,6 @@
 ---
 title: "Occupancy Networks: Learning 3D Reconstruction in Function Space"
+citekey: mescheder2019occupancynetworks
 venue: CVPR
 school:
   - University of Tubingen
