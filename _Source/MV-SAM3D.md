@@ -1,21 +1,7 @@
 ---
 title: "MV-SAM3D: Adaptive Multi-View Fusion for Layout-Aware 3D Generation"
-aliases:
-  - Li 2026
-  - "MV-SAM3D: Adaptive Multi-View Fusion for Layout-Aware 3D Generation"
-first_author: Baicheng Li
-year: 2026
-venue: 
 school:
   - Peking University
-kind: method
-task:
-  - 3D generation
-  - multi-view fusion
-  - scene layout
-code: 
-status: read
-pdf: "[[MV-SAM3D.pdf]]"
 tags:
   - paper
 ---

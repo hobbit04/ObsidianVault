@@ -1,23 +1,10 @@
 ---
 title: "DUSt3R: Geometric 3D Vision Made Easy"
-aliases:
-  - Wang 2024
-  - "DUSt3R: Geometric 3D Vision Made Easy"
-first_author: Shuzhe Wang
-year: 2024
 venue: CVPR
 school:
   - Aalto University
 lab:
   - Naver Labs Europe
-kind: method
-task:
-  - 3D reconstruction
-  - MVS
-  - camera pose
-code: https://github.com/naver/dust3r
-status: read
-pdf: "[[DUSt3r.pdf]]"
 tags:
   - paper
 ---

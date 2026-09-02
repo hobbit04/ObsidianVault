@@ -1,12 +1,10 @@
 ---
-title: |-
-  Lift4D: Harmonizing Single-View 3D Estimation
-  for 4D Reconstruction In-the-Wild
+title: "Lift4D: Harmonizing Single-View 3D Estimation for 4D Reconstruction In-the-Wild"
 venue: CVPR
-first_author: Yehonathan Litman
-code: https://lift4d.github.io
-School:
+school:
   - Carnegie Mellon University
+tags:
+  - paper
 ---
 [[Lift4D.pdf]]
 

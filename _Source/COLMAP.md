@@ -1,23 +1,9 @@
 ---
 title: Structure-from-Motion Revisited
-aliases:
-  - Schonberger 2016
-  - Schönberger 2016
-  - Structure-from-Motion Revisited
-first_author: Johannes L. Schönberger
-year: 2016
 venue: CVPR
 school:
   - University of North Carolina at Chapel Hill
   - ETH Zurich
-kind: method
-task:
-  - SfM
-  - camera pose
-  - 3D reconstruction
-code: https://github.com/colmap/colmap
-status: read
-pdf: "[[COLMAP.pdf]]"
 tags:
   - paper
 ---

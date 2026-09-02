@@ -1,24 +1,10 @@
 ---
 title: "VGGT: Visual Geometry Grounded Transformer"
-aliases:
-  - Wang 2025
-  - "VGGT: Visual Geometry Grounded Transformer"
-first_author: Jianyuan Wang
-year: 2025
 venue: CVPR
 school:
   - University of Oxford
 lab:
   - Meta AI
-kind: method
-task:
-  - 3D reconstruction
-  - camera pose
-  - depth estimation
-  - point tracking
-code: https://github.com/facebookresearch/vggt
-status: read
-pdf: "[[VGGT.pdf]]"
 tags:
   - paper
 ---

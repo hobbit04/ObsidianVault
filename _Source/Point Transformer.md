@@ -1,24 +1,11 @@
 ---
 title: Point Transformer
-aliases:
-  - Zhao 2021
-  - Point Transformer
-first_author: Hengshuang Zhao
-year: 2021
 venue: ICCV
 school:
   - University of Oxford
   - The University of Hong Kong
 lab:
   - Intel Labs
-kind: method
-task:
-  - point cloud
-  - segmentation
-  - classification
-code: 
-status: read
-pdf: "[[Point Transformer.pdf]]"
 tags:
   - paper
 ---
