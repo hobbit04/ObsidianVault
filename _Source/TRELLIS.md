@@ -25,5 +25,13 @@ tags:
 
 이 feature를 인코더가 latent $z$로 바꾸면 디코더가 다시 3d asset을 만들어낸다. 그 결과와 실제 GT asset을 비교해 전과정을 학습한다. 
 
+일반적인 VAE와의 중요한 차이점은, latent가 downsample 과정 없이 생성된다는 것이다. 
+![[Pasted image 20260902154930.png]]
+위 figure의 Structured Latents가 input과 동일한 크기임을 주목하자. 이런 설계 덕분에, 인코더와 디코더를 동일한 트랜스포머 블록으로 만들 수 있다(input, output만 바꿔서). 
+
+디코더의 종류도 여러개로 만들 수 있다. 각 디코더는 최종 output layer만 차이를 두고 그 외의 구조는 동일하다. 디코더의 종류에 따라 다른 손실함수를 적용해 학습시킬 수 있다. 
+### Structured Latents Generation
+
+
 ## Numbers
 ## Conclusion
