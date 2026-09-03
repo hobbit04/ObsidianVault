@@ -1,3 +1,6 @@
+EgoEngine, https://arxiv.org/pdf/2606.12604
+CHOrD.pdf, https://arxiv.org/pdf/2503.11958
+Do as I do.pdf, https://arxiv.org/pdf/2606.19333
 Lift4D.pdf, https://arxiv.org/pdf/2606.23688
 V-DPM.pdf, https://arxiv.org/pdf/2601.09499
 SAM3D.pdf, https://arxiv.org/pdf/2511.16624
