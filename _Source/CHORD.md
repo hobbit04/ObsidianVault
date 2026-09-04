@@ -31,6 +31,8 @@ Human video data를 바탕으로 로봇이 학습할 수 있는 데이터를 구
 총 세 개의 보상을 사용한다.
 1. **Task tracking.** Object가 이동하는 경로가 주어진 reference와 일치하는 정도를 따진다.
 2. **Motion imitation.** Human 키포인트들과 로봇의 키포인트가 일치하는 정도를 따진다. 이때 human 키포인트들은 [[Inverse Kinematics]]과정을 거쳐 로봇 기준($x_t^\text{robot}$)으로 바꾼다.
-3. **Contact guidance.** 매 타임스텝마다 $\mathcal{W}_{h,k}$를 만든 후 이의 support function을 정의한다. 그 다음 human reference function과 robot support function을 비교해 $r_\text{cws}$라는 contact loss를 만든다. 
+3. **Contact guidance.** 매 타임스텝마다 $\mathcal{W}_{h,k}$를 만든 후 이의 support function을 정의한다. 그 다음 human reference function과 robot support function을 비교해 $r_\text{cws}$라는 contact wrench-space loss를 만든다. 
 
 이 보상들을 합쳐서 $r$로 사용한다. [[VOC]]를 사용해 학습 초기에 너무 보상이 sparse 하지 않도록 도와준다.
+
+### Efficient, Robust, and Generalizable Policy Learning
