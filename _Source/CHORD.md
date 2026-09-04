@@ -26,3 +26,10 @@ Human video data를 바탕으로 로봇이 학습할 수 있는 데이터를 구
 > Wrench space를 **품질 함수(quality function)에서 대응 함수(correspondence function)로 재해석**한 것. 안정성을 최대화하는 대신, 사람 시연의 wrench와 로봇의 wrench가 얼마나 닮았는지를 잰다. 덕분에 접촉 위치·개수·손 형태가 달라도 "물체에 어떤 운동을 유발하는가"라는 공통 언어로 비교할 수 있고, non-force-closure 과도 구간도 자연스럽게 허용된다.
 > 이를 가능하게 한 기술적 장치가 support function이다. 열 개수와 순서가 제각각인 두 wrench matrix를 고정 길이 $b$차원 벡터로 정렬시켜 비교 가능하게 만든다.
 ## Method
+기본적으로 [[PPO]] 방식의, 정책을 학습하는 알고리즘이고 reward를 설계하는 것에 가장 큰 공을 들인다. 
+### RL with Wrench Space Contact Guidance
+총 세 개의 보상을 사용한다.
+1. Task tracking
+2. Motion imitation
+3. Contact guidance
+이 보상들을 합쳐서 $r$로 사용한다. [[VOC]]를 사용해 학습 초기에 너무 보상이 sparse 하지 않도록 도와준다.
