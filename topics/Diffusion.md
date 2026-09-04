@@ -1,1 +1,0 @@
-[[Generative models]]는 이미지를 생성하기 위해 사용되는 모델을 의미하며 Diffusion 또한 이를 위한 방식들 중 하나이다. 
