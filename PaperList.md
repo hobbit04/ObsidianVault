@@ -1,4 +1,8 @@
-EgoEngine, https://arxiv.org/pdf/2606.12604
+SPIDER.pdf, https://arxiv.org/pdf/2511.09484
+DexMachina.pdf, https://arxiv.org/pdf/2505.24853
+Planning Optimal Grasps.pdf, https://research.unipd.it/retrieve/e14fb267-a4d1-3de1-e053-1705fe0ac030/PlanningOptimal.pdf
+DeepMimic.pdf, https://xbpeng.github.io/projects/DeepMimic/DeepMimic_2018.pdf
+EgoEngine.pdf, https://arxiv.org/pdf/2606.12604
 CHORD.pdf, https://arxiv.org/pdf/2607.00033v2
 Do as I do.pdf, https://arxiv.org/pdf/2606.19333
 Lift4D.pdf, https://arxiv.org/pdf/2606.23688
