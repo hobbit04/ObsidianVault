@@ -1,4 +1,5 @@
-EgoEngine, https://arxiv.org/pdf/2606.12604
+SPIDER.pdf, https://arxiv.org/pdf/2511.09484
+EgoEngine.pdf, https://arxiv.org/pdf/2606.12604
 CHORD.pdf, https://arxiv.org/pdf/2607.00033v2
 Do as I do.pdf, https://arxiv.org/pdf/2606.19333
 Lift4D.pdf, https://arxiv.org/pdf/2606.23688
