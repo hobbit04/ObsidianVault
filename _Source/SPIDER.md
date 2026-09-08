@@ -30,3 +30,5 @@ $||\cdot||^2_{Q_t}$는 Weighted quadratic norm으로, $z^TQ_t z$를 의미한다
 $$U^{i+1}=U^{i}+\frac{\sum_{j=1}^{N_W}\exp\left(-\frac{J(U^i+[W]_j)}{\lambda}\right)[W]_j}{\sum_{j=1}^{N_W}\exp\left(-\frac{J(U^i+[W]_j)}{\lambda}\right)}
 $$
 이때 $[W]_j$는 가우시안 노이즈를 의미한다. 노이즈의 공분산을 고정하지 않고 스케줄링 하는 것이 이 논문의 첫 번째 기여라고 할 수 있다. 
+### Virtual Contact Guidance
+위의 최적화를 푼 결과는 꼭 하나의 답이 아닐 수도 있다. 그래서 local minima에 머물 수 있는데, 이를 해결하기 위해 virtual contact guidance를 도입한다. 
