@@ -1,3 +1,4 @@
+UnderstandingDeepLearning.pdf, https://github.com/udlbook/udlbook/releases/download/v5.0.3/UnderstandingDeepLearning_02_09_26_C.pdf
 SPIDER.pdf, https://arxiv.org/pdf/2511.09484
 DexMachina.pdf, https://arxiv.org/pdf/2505.24853
 Planning Optimal Grasps.pdf, https://research.unipd.it/retrieve/e14fb267-a4d1-3de1-e053-1705fe0ac030/PlanningOptimal.pdf

@@ -32,3 +32,5 @@ $$
 이때 $[W]_j$는 가우시안 노이즈를 의미한다. 노이즈의 공분산을 고정하지 않고 스케줄링 하는 것이 이 논문의 첫 번째 기여라고 할 수 있다. 
 ### Virtual Contact Guidance
 위의 최적화를 푼 결과는 꼭 하나의 답이 아닐 수도 있다. 그래서 local minima에 머물 수 있는데, 이를 해결하기 위해 virtual contact guidance를 도입한다. 
+![[Pasted image 20260910184244.png]]
+(a)는 똑같은 목적을 달성하는 행동이더라도 사람의 방식을 선호 하도록 contact guidance를 주는 예시이다. (b)는 노이즈의 공분산을 고정하지 않는, annealed kernel을 사용한 sampling과 더불어 contact guidance를 사용했을 때의 샘플링 효용이 올라가는 것을 나타내는 그림이다. 
