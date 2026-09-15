@@ -34,9 +34,27 @@ date: 2026-09-15
 | r_relative | `rewards.py:487 relative_object_pose_reward` | ✅ |
 | VOC 어닐링 커리큘럼 | `tasks/v2d/mdp/curriculum.py:47-156` | ✅ |
 | 사람 접촉 렌치 사전계산 | `commands/hand_object_commands.py:745` | ✅ |
+| **r_fc (reduced force closure)** | `tasks/v2d_whole_body/mdp/rewards/contact_rewards.py:100 force_closure_reward` | ⚠️ **전신 경로에만** |
 | **§3.2 inpainting (hand-only→전신)** | `grep -i inpaint` → **0건** | 🔴 미공개 |
-| **r_fc (reduced force closure)** | 미확인 — **확인 필요** | ❓ |
 | ~2시간 학습 가속 구현 | README가 미포함 명시 | 🔴 |
+
+### r_fc 확인 결과 (2026-09-15)
+- **구현 존재**: `force_closure_reward(env, command_name="motion", min_support=0.01)`
+  - 논문 식과 일치: `has_support.float().mean(dim=-1)` = 기저 방향 중 support > ε 인 비율, ε=`min_support`=0.01
+  - 등록·가중치: `config/sonic/g1/g1_sonic_env_cfg.py:561` `weight=5.0`
+- **단, `tasks/v2d/`(Sharpa 손 = CHORD 본선)에는 없다.** 손 경로 `rewards.py`의 18개 함수에 force closure 없음.
+- 논문 §3.2가 r_fc를 쓰는 두 경우 중 **(b) 전신 레퍼런스만 구현**, **(a) RGB 영상 재구성의 노이지 접촉은 손 경로에서 사용 불가**.
+- 구현이 논문과 다른 점(docstring이 자인): *"proxy lower bound: support is evaluated per hand rather than by combining both hands' contacts into a single wrench space per body"* — 양손 접촉을 합쳐 하나의 렌치 공간으로 보지 않고 손별로 평가.
+- 참고: CHORD 보상 세트가 **두 번 구현**돼 있다. `tasks/v2d/mdp/rewards.py`(손)와 `tasks/v2d_whole_body/mdp/rewards/contact_rewards.py:23,55,77`(전신). 중복 유지보수 리스크.
+
+### 🟢 전신 경로에는 예제 데이터가 동봉돼 있다
+`assets/human_motion_data/whole_body/` — **자체 촬영 영상에서 나온 3개 시퀀스가 이미 리타게팅된 상태로** 들어 있음:
+- `soma/sequence_id={corn_can_right_left_handover_01, snack_box_pick_and_place_01, blue_trash_can_drag_007}/robot_name=g1/data.parquet` (motion_v1)
+- 각 시퀀스에 `object/textured_mesh.{obj,urdf}` + 텍스처
+- `reconstructed_stage/*_support.usda` 3개
+- datacard: *"three post-processed examples from the HOI dataset, retargeted to the G1 robot"*
+
+→ **2단계를 돌리지 않고도 전신 경로를 end-to-end로 재현 가능.**
 
 ### 하이퍼파라미터 대조 필요
 - `contact_wrench_support_reward(tolerance=0.1, var=0.1)` — 논문 β, v_cws와 대조
@@ -80,18 +98,18 @@ Ego 영상 ─ run_ego_* ─ result_bundle ─▶ export_result_threejs_scene.py
 
 ## 4. 확인된 결함 (우선순위)
 
-| # | 위치 | 확신 | CHORD 경로? | 내용 |
-|---|---|---|---|---|
-| **F** | `tasks/v2d/mdp/utils.py:199` | 확실 | 🔴 **예** | `interpolate_robot_motion_data`가 리샘플 후 `.fps`를 갱신하지 않음. 호출부 `hand_object_commands.py:214`. 120Hz GRAB/OAKINK2를 리샘플해도 `.fps`는 120 그대로 → `replay_motion.py:738,895`, `viser_playback.py:331`이 잘못된 시간축 사용 |
-| **H** | `soma_to_g1.py:914,1075` | 확실 | 아니오(전신) | `fps=float(kin.frequency)` — `kin.frequency`는 **IK 솔버 rate limiter 기본값 200.0**(`whole_body_kinematics.py:39`)이지 모션 fps가 아님. `soma_to_g1.py`에 `--fps` 인자 없음, `read_soma.py`는 npz의 framerate를 읽지 않음 → 30fps 영상이 `fps=200`으로 기록, 재생 ~6.7배 오차 |
-| **A** | `dataset_registry.py:81,125,145` | 확실 | 예 | `link_to_site_quat_wxyz` 필드가 레포 전체에서 **한 번도 읽히지 않음**. 각 스크립트가 상수 하드코딩. 헬퍼 `retarget_utils.py:159`는 **xyzw**를 받는데 docstring은 "wxyz"라고 오기 → 향후 "중복 제거" 시 손목이 조용히 틀어짐 |
-| **D** | `taco_loader.py:353` vs `dataset_registry.py:107` | 확실 | 예 | `mesh_vertex_scale`(TACO=0.01) 이중 진실 원천. 현재 값은 일치하나 동기화 장치 없음 |
-| — | `dataset_registry.py`의 `fps` | 확실 | 예 | `config.fps` 소비자 **0개**. 실제 fps는 `*_loader.py` 상수에서 옴. 동일 패턴의 이중 진실 원천 |
-| **G** | `tracking_command_cfg.py:131` | 확실 | 아니오 | `target_fps` 필드가 소비되지 않음 → 전신 경로에 리샘플링 부재 |
-| **B** | `soma_to_g1.py:792,800` | 의심(높음) | 아니오 | world 회전에 `transform_source_rotation`(R@M@Rᵀ) 적용. 같은 프레임의 위치는 world 규약(`R@p`) → 위치/회전 basis 불일치 |
-| **C** | `soma_to_g1.py:868-869` | 확실 | 아니오 | `soma_joints*`만 변환·높이 보정 없이 raw 저장 → parquet 내 좌표계 혼재 |
-| **E** | `read_soma.py:356` vs `soma_to_g1.py:359` | 의심(조건부) | 아니오 | SOMA `unit` 스케일이 `transl`에만 적용, 객체 `poses.npy`엔 미적용. non-meter export 시 몸/객체 분리 |
-| — | `v2d_viz/run_3d_viewer.py:94` | 확실 | 아니오 | 깊이 디코딩 `65535/(raw+1)-1` — 정식 `65535/raw-1`과 불일치(`datatypes.py:34`). 다른 12개 지점은 전부 정합. 뷰어 전용이나 시각 검증을 왜곡 |
+| #     | 위치                                                | 확신      | CHORD 경로? | 내용                                                                                                                                                                                                                                        |
+| ----- | ------------------------------------------------- | ------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **F** | `tasks/v2d/mdp/utils.py:199`                      | 확실      | 🔴 **예**  | `interpolate_robot_motion_data`가 리샘플 후 `.fps`를 갱신하지 않음. 호출부 `hand_object_commands.py:214`. 120Hz GRAB/OAKINK2를 리샘플해도 `.fps`는 120 그대로 → `replay_motion.py:738,895`, `viser_playback.py:331`이 잘못된 시간축 사용                                    |
+| **H** | `soma_to_g1.py:914,1075`                          | 확실      | 아니오(전신)   | `fps=float(kin.frequency)` — `kin.frequency`는 **IK 솔버 rate limiter 기본값 200.0**(`whole_body_kinematics.py:39`)이지 모션 fps가 아님. `soma_to_g1.py`에 `--fps` 인자 없음, `read_soma.py`는 npz의 framerate를 읽지 않음 → 30fps 영상이 `fps=200`으로 기록, 재생 ~6.7배 오차 |
+| **A** | `dataset_registry.py:81,125,145`                  | 확실      | 예         | `link_to_site_quat_wxyz` 필드가 레포 전체에서 **한 번도 읽히지 않음**. 각 스크립트가 상수 하드코딩. 헬퍼 `retarget_utils.py:159`는 **xyzw**를 받는데 docstring은 "wxyz"라고 오기 → 향후 "중복 제거" 시 손목이 조용히 틀어짐                                                                        |
+| **D** | `taco_loader.py:353` vs `dataset_registry.py:107` | 확실      | 예         | `mesh_vertex_scale`(TACO=0.01) 이중 진실 원천. 현재 값은 일치하나 동기화 장치 없음                                                                                                                                                                             |
+| —     | `dataset_registry.py`의 `fps`                      | 확실      | 예         | `config.fps` 소비자 **0개**. 실제 fps는 `*_loader.py` 상수에서 옴. 동일 패턴의 이중 진실 원천                                                                                                                                                                    |
+| **G** | `tracking_command_cfg.py:131`                     | 확실      | 아니오       | `target_fps` 필드가 소비되지 않음 → 전신 경로에 리샘플링 부재                                                                                                                                                                                                 |
+| **B** | `soma_to_g1.py:792,800`                           | 의심(높음)  | 아니오       | world 회전에 `transform_source_rotation`(R@M@Rᵀ) 적용. 같은 프레임의 위치는 world 규약(`R@p`) → 위치/회전 basis 불일치                                                                                                                                           |
+| **C** | `soma_to_g1.py:868-869`                           | 확실      | 아니오       | `soma_joints*`만 변환·높이 보정 없이 raw 저장 → parquet 내 좌표계 혼재                                                                                                                                                                                     |
+| **E** | `read_soma.py:356` vs `soma_to_g1.py:359`         | 의심(조건부) | 아니오       | SOMA `unit` 스케일이 `transl`에만 적용, 객체 `poses.npy`엔 미적용. non-meter export 시 몸/객체 분리                                                                                                                                                           |
+| —     | `v2d_viz/run_3d_viewer.py:94`                     | 확실      | 아니오       | 깊이 디코딩 `65535/(raw+1)-1` — 정식 `65535/raw-1`과 불일치(`datatypes.py:34`). 다른 12개 지점은 전부 정합. 뷰어 전용이나 시각 검증을 왜곡                                                                                                                                  |
 
 ### 정합성이 확인된 것 (안심해도 됨)
 - 쿼터니언 재정렬: `*_to_sharpa.py:235,244`, `soma_to_g1.py:837`, `pinocchio_viser_visualizer.py:259`, `read_soma.py:223` 모두 정상
@@ -101,10 +119,24 @@ Ego 영상 ─ run_ego_* ─ result_bundle ─▶ export_result_threejs_scene.py
 
 ---
 
-## 5. 다음 액션
+## 5. 재현 가능한 두 트랙 (확정)
 
-1. **[최우선] r_fc 구현 유무 확인.** 없으면 자체 영상 경로는 원리적으로 재현 불가.
-2. **재현 범위 확정.** `run_example_sequences.sh` + `docs/EXAMPLE_SEQUENCES.md`가 실질 단위(arctic/hot3d/taco). 논문의 1,831 태스크 중 실제 가용 개수 산정.
-3. **하이퍼파라미터 대조.** 논문 Appendix vs `tasks/v2d/` cfg 기본값.
-4. **결함 F 수정** 후 베이스라인 학습. CHORD 경로 위의 유일한 확인된 시간축 버그.
-5. `motion_v1` 관련 작업은 **재현 범위 밖**으로 두기.
+| | 트랙 A: 손 (Sharpa) | 트랙 B: 전신 (G1) |
+|---|---|---|
+| 논문 절 | §4.1–4.4 (주 실험, 82.12%) | §4.5 (90.77%) |
+| 코드 | `tasks/v2d/` | `tasks/v2d_whole_body/` |
+| 포맷 | `ManoSharpaData` | `motion_v1` (`single_robot`) |
+| 데이터 | 공개 DS (arctic/hot3d/taco…) — 별도 다운로드 | **레포 동봉 3시퀀스** |
+| 보상 | r_cws + r_unintend + r_miss + VOC | 위 + **r_fc**(weight 5.0) |
+| 영상 유래? | 아니오 (mocap) | 예 (자체 HOI 촬영) |
+| 착수 비용 | 중 (DS 셋업 필요) | **낮음 (즉시 실행 가능)** |
+
+**트랙 B가 "영상 → 로봇 모션"에 가장 가까운, 실제로 돌아가는 경로다.** 단 2단계를 직접 돌리는 게 아니라 이미 처리된 산출물을 쓰는 형태.
+
+## 6. 다음 액션
+
+1. **트랙 B 먼저 실행.** 동봉 3시퀀스로 `g1_sonic_env_cfg` 학습을 띄워 환경·의존성·자산 로딩을 검증. 실패 비용이 가장 낮은 진입점.
+2. **트랙 A 데이터 셋업.** `docs/{ARCTIC,HOT3D,TACO}_SETUP.md` → `run_example_sequences.sh`. 논문 1,831 태스크 중 실가용 개수 산정.
+3. **하이퍼파라미터 대조.** 논문 Appendix vs `contact_wrench_support_reward(tolerance=0.1, var=0.1)`, 렌치 기저 개수 b, 마찰 원뿔 edge 수 d, 종료 임계(15cm / 40°).
+4. **결함 F 수정** — 트랙 A 위의 유일한 확인된 시간축 버그. 특히 GRAB/OAKINK2(120Hz).
+5. 자체 영상 → 전신은 **inpainting 모듈 부재로 불가**. 직접 구현하려면 별도 연구 과제로 분리.
