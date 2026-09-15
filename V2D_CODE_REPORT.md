@@ -270,14 +270,14 @@ rosbag → rosbag_to_edex → mv_preprocess → FoundationStereo ─┤         
 
 단계별 역할:
 
-| 순서 | 함수 | 역할 |
-|---|---|---|
-| 1 | `run_rosbag_to_edex` | ROS bag → 카메라별 이미지 + EDEX 내부 파라미터 |
-| 2 | `run_mv_preprocess` | 스테레오 정류, 리스케일, 비디오 인코딩, HOI bbox 재매핑, `prompt.txt` 추출, 외부 캘리브레이션 병합, 객체 메시 정렬 |
-| 3 | `run_mv_image_list_to_depth` | FoundationStereo로 스테레오 쌍별 깊이 |
-| 4-6 | DINO → SAM2 → `run_mv_videos_to_poses` | 객체 브랜치. 텍스트 프롬프트로 검출 → 마스크 → 6-DoF 추적 |
-| 7-10 | Detectron2 → SAM2 → `run_mv_optimize_mhr_params` → `run_export_soma` | 사람 브랜치. 사람 검출/추적 → 마스크 → 멀티뷰 신체 파라미터 최적화 |
-| 11-16 | postprocess | 융합 포인트클라우드, 지면 추정, chamfer 거리(객체/사람), 오버레이 영상, Wis3D 시각화 |
+| 순서    | 함수                                                                   | 역할                                                                            |
+| ----- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 1     | `run_rosbag_to_edex`                                                 | ROS bag → 카메라별 이미지 + EDEX 내부 파라미터                                             |
+| 2     | `run_mv_preprocess`                                                  | 스테레오 정류, 리스케일, 비디오 인코딩, HOI bbox 재매핑, `prompt.txt` 추출, 외부 캘리브레이션 병합, 객체 메시 정렬 |
+| 3     | `run_mv_image_list_to_depth`                                         | FoundationStereo로 스테레오 쌍별 깊이                                                  |
+| 4-6   | DINO → SAM2 → `run_mv_videos_to_poses`                               | 객체 브랜치. 텍스트 프롬프트로 검출 → 마스크 → 6-DoF 추적                                         |
+| 7-10  | Detectron2 → SAM2 → `run_mv_optimize_mhr_params` → `run_export_soma` | 사람 브랜치. 사람 검출/추적 → 마스크 → 멀티뷰 신체 파라미터 최적화                                      |
+| 11-16 | postprocess                                                          | 융합 포인트클라우드, 지면 추정, chamfer 거리(객체/사람), 오버레이 영상, Wis3D 시각화                      |
 
 한 단계의 출력 디렉터리가 다음 단계의 입력이 되는 방식은 다음 발췌에서 그대로 보인다.
 
@@ -361,11 +361,11 @@ if args.mode == "bundlesdf" and not args.skip_stage1_nerf:
 
 1인칭 영상에서 **손(MANO) + 객체 메시/포즈 + 카메라 궤적**을 뽑아 `result_bundle`로 묶는 경로다. 세 겹의 스크립트로 되어 있다.
 
-| 파일 | 역할 |
-|---|---|
-| `v2d_pipelines/run_ego_reconstruction.py` | 공개 진입점. `--hand_tracking {dynhamr,hamer}`로 아래 둘 중 하나를 고르고, 공통 후처리(DROID-SLAM, GeoCalib 중력 정렬, Three.js 내보내기)를 붙인다 |
-| `v2d_pipelines/run_v2d_ego_e2e.py` | DynHaMR 경로. ViPE + Dyn-HaMR(`v2d_ego_hand_reconstruction`) → MoGe 깊이 → DINO → SAM2 → SAM3D 메시 → FoundationPose 스케일/추적 → EKF → 손 정렬 → `write_result_bundle` |
-| `v2d_pipelines/run_ego_wilor.py` | HaMeR 경로(약 2300줄, 37단계). AnyCalib → GeoCalib → MoGe → DROID-SLAM → WiLoR → ... → HaMeR → gsplat 정제(`v2d_gsplat_refinement`) → 번들 |
+| 파일                                        | 역할                                                                                                                                                         |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `v2d_pipelines/run_ego_reconstruction.py` | 공개 진입점. `--hand_tracking {dynhamr,hamer}`로 아래 둘 중 하나를 고르고, 공통 후처리(DROID-SLAM, GeoCalib 중력 정렬, Three.js 내보내기)를 붙인다                                          |
+| `v2d_pipelines/run_v2d_ego_e2e.py`        | DynHaMR 경로. ViPE + Dyn-HaMR(`v2d_ego_hand_reconstruction`) → MoGe 깊이 → DINO → SAM2 → SAM3D 메시 → FoundationPose 스케일/추적 → EKF → 손 정렬 → `write_result_bundle` |
+| `v2d_pipelines/run_ego_wilor.py`          | HaMeR 경로(약 2300줄, 37단계). AnyCalib → GeoCalib → MoGe → DROID-SLAM → WiLoR → ... → HaMeR → gsplat 정제(`v2d_gsplat_refinement`) → 번들                           |
 
 이 파이프라인들의 재시작 관용구는 매우 단순하다. 각 단계를 "산출물이 이미 있는가"라는 술어로 감싼다.
 
