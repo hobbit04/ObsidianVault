@@ -7,3 +7,6 @@ School:
 Lab:
   - NVIDIA
 ---
+## Task
+Functional retargeting을 수행하는 curriculum based RL 방법을 제시
+## Previous Limits
