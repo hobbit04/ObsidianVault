@@ -111,7 +111,7 @@ hr.sp{border:0;border-top:1px solid var(--line);margin:40px 0}
 <div class="wrap">
 <div class="eyebrow">Experiment report · 2026-09-20 ~ 09-22</div>
 <h1>티슈박스 ego 영상에서 Sharpa 정책까지 — CHORD Appendix C 재현 시도</h1>
-<p class="lede">단안 egocentric 영상 한 편(390 프레임)을 재구성 파이프라인에 통과시켜 metric 손·물체 궤적을 얻고, 이를 Sharpa Wave 플로팅 핸드로 리타게팅한 뒤 Isaac Lab에서 PPO로 8시간 학습했다. 재구성과 리타게팅은 모든 정량 게이트를 통과했으나, 학습된 정책은 박스를 들지 못했다. 이 문서는 동작한 모듈과 코드를 순서대로 기록하고, 실패의 원인과 지표의 맹점을 정리한다.</p>
+<p class="lede">단안 egocentric 영상 한 편(390 프레임)을 재구성 파이프라인에 통과시켜 metric 손·물체 궤적을 얻고, 이를 Sharpa Wave 플로팅 핸드로 리타게팅한 뒤 Isaac Lab에서 PPO로 8시간 학습했다. 학습된 정책은 박스를 들지 못했다. 사후에 논문이 규정한 품질 검사 두 가지를 실행한 결과, 학습에 쓴 시퀀스는 <b>관통 검사에서 2.19 cm로 탈락</b>해 애초에 학습셋에 들어가지 말았어야 했음이 드러났다. 이 문서는 동작한 모듈과 코드를 순서대로 기록하고, 실패의 원인과 지표의 맹점을 정리한다.</p>
 <div class="meta">
   <span>입력 <b>tissue_box.mp4</b> (IMG_5969), 390 f @ 30 fps</span>
   <span>물체 프롬프트 <b>"a tissue box"</b></span>
@@ -122,8 +122,8 @@ hr.sp{border:0;border-top:1px solid var(--line);margin:40px 0}
 
 <div class="verdict">
   <div><div class="k">재구성 → 번들</div><div class="v"><span class="badge b-good">통과</span></div><div class="small">NaN 0, validity 100%, metric 보정·레벨링 후 실물 치수와 1 cm 내 일치</div></div>
-  <div><div class="k">리타게팅</div><div class="v"><span class="badge b-good">통과</span></div><div class="small">task error 2.28 / 2.32 cm, 2 cm 초과 관통 0%, frame-0 안착 0.00 cm</div></div>
-  <div><div class="k">PPO 학습 4078 iter</div><div class="v"><span class="badge b-good">완주</span><small>7 h 33 m</small></div><div class="small">VOC 0.0 도달, 에피소드 완주율 95.8%</div></div>
+  <div><div class="k">리타게팅</div><div class="v"><span class="badge b-crit">탈락</span></div><div class="small">task error 2.28 / 2.32 cm, frame-0 안착 0.00 cm. 그러나 논문의 캡슐 기준 관통 <b>2.19 cm &gt; 2 cm</b> — §2.4</div></div>
+  <div><div class="k">PPO 학습 4078 iter</div><div class="v"><span class="badge b-good">완주</span><small>7 h 33 m</small></div><div class="small">VOC 0.0 도달, 완주율 95.8%. contact wrench 보상은 0 (force_closure 대체)</div></div>
   <div><div class="k">학습된 정책</div><div class="v"><span class="badge b-crit">실패</span></div><div class="small">영상 확인 결과 박스를 들지 않음. 학습 지표는 이 클립에서 실패를 감지할 수 없었음</div></div>
 </div>
 
@@ -183,6 +183,7 @@ hr.sp{border:0;border-top:1px solid var(--line);margin:40px 0}
   <li><div><span class="t">Rigid URDF <span class="m">scripts/generate_rigid_urdfs.py --dataset ego_recon</span></span><div class="d">메시에서 충돌 STL(<code>&lt;seq&gt;_visual.stl</code>)과 <code>&lt;seq&gt;_rigid.urdf</code> 생성.</div></div></li>
   <li><div><span class="t">Support surface <span class="m">scripts/reconstruct_support_surfaces.py</span></span><div class="d">물체가 정지한 프레임(238개, 7 세그먼트)에서 접촉 디스크를 추정·병합 → <code>reconstructed_stage/&lt;seq&gt;_support.usda</code>. "kept 1 above ground"가 통과 조건이다.</div></div></li>
   <li><div><span class="t">운동학적 검증 영상 <span class="m">scripts/retarget/vis_retargeted.py --save_mp4</span></span><div class="d">viser로 리타게팅 결과를 재생한 MP4. <b>물리 없음</b> — 박스는 지정된 자리에 그려질 뿐이다. → <code>out/tissue_box_refined.mp4</code></div></div></li>
+  <li class="skip"><div><span class="t">품질 검사 <span class="m">scripts/data_assessor.py --checks hand_penetration,dummy_agent_success</span><span class="tag">당시 건너뜀 · 사후 실행</span></span><div class="d">논문이 학습 전 필터로 규정한 두 검사. <code>data_quality_checks/hand_penetration.py</code>(→ <code>filter_penetrations.py</code>의 캡슐 기반 침투 계산)와 <code>data_quality_checks/dummy_agent_success.py</code>(→ <code>rsl_rl/dummy_agent.py</code> zero-action 재생)를 감싼다. <b>이번 실행에서는 이 단계를 거치지 않고 학습으로 넘어갔고, 사후 실행 결과 관통 2.19 cm로 탈락했다.</b> → §2.4</div></div></li>
   <li><div><span class="t">PPO 학습 <span class="m">scripts/rsl_rl/train.py --task Sharpa-V2D-v0</span></span><div class="d">rsl_rl PPO, Hydra 오버라이드. 환경 정의 <code>tasks/v2d/v2d_hand_env_cfg.py</code>, 커리큘럼 <code>tasks/v2d/mdp/curriculum.py</code>(<code>FixedTimestepCurriculum</code>: VOC 스케일과 보상 가중치를 iteration 스케줄로 갱신), 종료 조건 <code>tasks/v2d/mdp/terminations.py</code>. 에이전트 설정 <code>config/sharpa_wave/agents/rsl_rl_ppo_cfg.py</code>(<code>num_steps_per_env 24</code>, <code>save_interval 200</code>). 해석된 전체 설정은 <code>logs/.../params/env.yaml</code>에 저장된다.</div></div></li>
   <li><div><span class="t">평가·렌더 <span class="m">scripts/rsl_rl/eval.py --task Sharpa-V2D-v0-Play --video</span></span><div class="d">체크포인트를 로드해 1 env 롤아웃을 400 스텝 녹화. <b>물리 있음</b> — 이 영상만이 정책의 실제 행동이다. → <code>logs/.../videos/play/rl-video-step-0.mp4</code></div></div></li>
 </ol>
@@ -224,12 +225,37 @@ hr.sp{border:0;border-top:1px solid var(--line);margin:40px 0}
 <tr><td>frame-0 안착 (메시 바닥 − 디스크 상면)</td><td class="n">−0.00 cm</td><td class="n">−0.00 cm</td><td class="n">±0.5</td></tr>
 <tr><td>world-repose 게이트</td><td class="n">1.2e-7 / 8.1e-8 m</td><td class="n">1.1e-7 / 1.2e-7 m</td><td class="n">~1e-7</td></tr>
 </table></div>
-<p class="small">관통은 물체 OBB(직육면체 근사) 기준이라 실제 메시 표면보다 보수적이다. 정제는 IK 자체를 개선하지 않았고(task error 불변), IK가 따라갈 목표인 손–물체 상대 배치를 다듬었다.</p>
+<p class="small">이 표의 관통 수치는 직접 만든 임시 측정(<code>out/timing/check_quality.py</code>)으로, 물체를 OBB로, 손을 링크 원점 점집합으로 근사한다. <b>§2.4에서 저장소의 정식 검사를 돌린 결과 실제 값은 2.19 cm로 이보다 크다</b> — 손을 점으로 축소한 과소평가가 물체를 직육면체로 부풀린 과대평가를 압도했다. 정제가 관통을 줄였다는 <i>상대적</i> 결론은 두 측정 모두에서 동일하게 유지된다. 정제는 IK 자체를 개선하지 않았고(task error 불변), IK가 따라갈 목표인 손–물체 상대 배치를 다듬었다.</p>
 
-<h3>2.4 학습 설정</h3>
+<h3>2.4 논문의 Quality Check — 사후 실행</h3>
+<p>논문은 리타게팅된 시퀀스를 학습에 넣기 전 두 가지 자동 검사로 거른다. 이번 실행에서는 <b>이 단계를 건너뛰고 바로 학습에 들어갔고</b>, 실험 종료 후에야 저장소에 이미 구현돼 있는 <code>scripts/data_quality_checks/</code>를 찾아 실행했다.</p>
+<div class="tbl"><table>
+<tr><th>검사</th><th>구현</th><th>기준</th><th class="n">tissue_box_refined</th><th class="n">tissue_box_timing</th></tr>
+<tr><td><b>관통</b> hand_penetration</td><td><code>filter_penetrations.py</code>의 캡슐 기반 체크. 손–물체는 물체 convex hull의 signed distance, 손–손은 캡슐–캡슐 해석적 거리. 손은 좌·우 각 21개 캡슐</td><td>최대 침투 &lt; 2 cm</td><td class="n"><b>2.188 cm</b><br><span class="badge b-crit">탈락</span></td><td class="n"><b>2.855 cm</b><br><span class="badge b-crit">탈락</span></td></tr>
+<tr><td><b>재생</b> dummy_agent_success</td><td><code>dummy_agent.py</code>로 zero-action 300 스텝 롤아웃 + MP4 녹화. 루프가 끝까지 돌고 MP4가 비어 있지 않을 때만 <code>.dummy_agent_ok</code> 센티넬을 기록</td><td>센티넬 존재</td><td class="n">센티넬 기록됨<br>MP4 830 KB<br><span class="badge b-good">통과</span></td><td class="n">미실행<br><span class="small">관통에서 이미 탈락</span></td></tr>
+</table></div>
+<div class="callout crit">
+<p><b>논문 절차를 그대로 적용했다면 이번 8시간 학습은 시작되지 않았을 실험이다.</b> 재생이 통과하므로 시뮬레이션이 깨진 것은 아니고, 문제는 재구성된 손–물체 상대 포즈의 정확도다. 2.19 cm는 티슈박스 두께(약 11 cm)의 1/5에 해당하는 침투로, 정책이 추적해야 할 레퍼런스 궤적 자체가 물리적으로 불가능한 자세를 포함한다는 뜻이다. §3.2의 커리큘럼 압축이 학습 실패의 직접적 원인이지만, 기준 모션의 품질도 애초에 게이트를 넘지 못하는 수준이었다.</p>
+</div>
+
+<h4 style="font-size:15px;font-weight:600;margin-top:24px">기본 설정으로는 검사가 조용히 건너뛰어진다</h4>
+<p>첫 실행은 <code>pass 100%, score 0.0000</code>을 돌려줬다. 직접 잰 1.25 cm와 모순이라 파고든 결과, 이 "통과"는 <b>측정을 하지 않았다</b>는 뜻이었다.</p>
+<pre><code>tissue_box_refined:
+   watertight        = False
+   mesh.volume       = 0.000367 m³     (기하학적 실제 부피 ≈ 0.00234 m³)
+   hull_volume_ratio = 6.284  &gt; 3.0    → hand-object 검사 SKIP</code></pre>
+<p>검사는 <code>hull_volume_ratio = hull.volume / mesh.volume</code>이 <code>hull_ratio_max</code>(기본 3.0)를 넘으면 그 물체를 "오목한 물체(AR 안경, 머그, 열린 화병)"로 보고 손–물체 검사를 통째로 건너뛴다. 논문 문단이 명시한 바로 그 예외 규칙이다. 그런데 SAM3D 재구성 메시는 watertight가 아니어서 <code>trimesh</code>의 부피 계산이 실제의 약 1/6로 나오고, <b>볼록한 직육면체인 티슈박스가 오목 물체로 오분류됐다</b>. 게이트가 전제하는 것은 mocap 데이터셋의 깔끔한 스캔 메시이고, 단안 재구성 메시에는 그 전제가 성립하지 않는다. 위 수치는 게이트를 풀고 모든 프레임을 재서 얻은 값이다.</p>
+<pre><code>python scripts/data_assessor.py \
+  --input_dir .../ego_recon/processed --checks hand_penetration \
+  --set hand_penetration.hull_ratio_max=10 \   # 기본 3.0 → 오분류 회피
+  --set hand_penetration.stride=1 \            # 기본 3 → 전 프레임
+  --output_json out/qc_penetration_real.json</code></pre>
+<p class="small"><code>tissue_box_simple</code>은 <code>no frames</code>로 <code>score 0.0</code>을 반환한다. 이 역시 "통과"가 아니라 "측정 대상 없음"이다 — 이 검사에서 <b>0.0000은 항상 의심해야 할 값</b>이다.</p>
+
+<h3>2.5 학습 설정</h3>
 <div class="two">
 <div>
-<p><b>레시피</b> — README "Ego-video (monocular) sequences"의 force-closure 레시피. 단안 접촉 기하가 노이지해 <code>contact_wrench_support_reward</code> 대신 <code>force_closure</code>(5.0)를 쓰고, 접촉 항 3개를 <code>env.rewards.*.weight</code>와 커리큘럼 <code>params.rewards_*</code> <b>두 곳 모두</b> 0으로 둔다.</p>
+<p><b>레시피</b> — README "Ego-video (monocular) sequences"의 force-closure 레시피. 단안 접촉 기하가 노이지해 <code>contact_wrench_support_reward</code> 대신 <code>force_closure</code>(5.0)를 쓰고, 접촉 항 3개를 <code>env.rewards.*.weight</code>와 커리큘럼 <code>params.rewards_*</code> <b>두 곳 모두</b> 0으로 둔다.</p><p><b>이 선택의 의미</b> — <code>contact_wrench_support_reward</code>는 로봇의 현재 wrench support를 사람 레퍼런스의 wrench support와 비교하는, 논문 제목 그대로의 "contact wrench guidance"다. 이를 0으로 두었으므로 <b>이번 실행은 CHORD의 핵심 보상 없이 진행됐다.</b> <code>force_closure</code>는 wrench 공간에 있지만 사람의 wrench를 보지 않고, 레퍼런스에서 "지금 접촉 중"이라는 타이밍 라벨만 가져온다. 리타게팅 Parquet에는 <code>mano_*_object_contact_{positions,normals,part_ids}</code>가 들어 있어 레퍼런스 wrench 자체는 계산 가능한 상태였다.</p>
 <p><b>예산</b> — 4096 env, <code>--video</code> 없음. 실측 7.019 s/iter(n=29), 기동 153 s → 8시간 = <b>4079 iteration</b>. <code>--video</code>는 실측 14.4 s/iter로 2.06배 비용이라 학습 중에는 끄고 eval에서 렌더했다.</p>
 </div>
 <div>
@@ -292,10 +318,12 @@ virtual_object_control_scale_factor:   [1.0, 0.75, 0.5, 0.25, 0.1, 0.05, 0.025, 
 <p>재현 대상은 Appendix C "CHORD Validation from Human Video"(brush 조작, ADD-AUC 0.647)다. 이번 실행은 다음 지점에서 논문과 다르며, 결과 해석 시 감안해야 한다.</p>
 <div class="tbl"><table>
 <tr><th>항목</th><th>논문</th><th>이번 실행</th></tr>
+<tr><td><b>보상 — contact wrench guidance</b></td><td>사람 시연의 contact wrench와 로봇의 contact wrench를 wrench 공간에서 비교 (<code>contact_wrench_support_reward</code>). 논문의 핵심 기여</td><td><b>사용하지 않음</b> (가중치 0.0). 대신 <code>force_closure</code> 5.0 — 레퍼런스에서 "접촉 중" 이진 라벨만 게이트로 쓰고 로봇 자신의 wrench 지지 방향 비율을 보상. 사람의 wrench는 참조하지 않음. 저장소 README의 ego-video 레시피를 따른 것으로, 단안 접촉 기하가 노이지하다는 이유</td></tr>
 <tr><td>학습 알고리즘</td><td><b>FlashSAC</b>, 2048 env, L40S 1장, ≈2 h / 시퀀스</td><td><b>PPO (rsl_rl)</b>, 4096 env, A100 1장, 7 h 33 m. 저장소에 FlashSAC 없음</td></tr>
 <tr><td>커리큘럼</td><td>기본 스케줄 (추정)</td><td>0.2632배 압축</td></tr>
 <tr><td>손 추적</td><td>ViPE + DynHaMR</td><td>HaMeR (<code>--hand_tracking hamer</code>)</td></tr>
 <tr><td>metric 정합</td><td>MoGe 앵커 + gsplat 공동 최적화로 스케일 결정</td><td>MoGe 정렬·gsplat 실행했으나 손 스케일 1.45 잔존 → <code>scale_result_bundle.py</code> 수동 재스케일 + 7.01° 레벨링 추가</td></tr>
+<tr><td><b>Quality Check</b></td><td>학습 전 필터. 관통 2 cm 초과 시퀀스와 재생 실패 시퀀스를 학습셋에서 제외</td><td><b>학습 전에는 미실시.</b> 사후 실행 결과 관통 2.188 cm로 탈락 — 논문 절차대로면 이 시퀀스는 학습에 들어가지 않는다 (§2.4)</td></tr>
 <tr><td>평가 지표</td><td>ADD-AUC (DexMachina 정의)</td><td>미구현. 논문 수치와 직접 비교 불가</td></tr>
 <tr><td>대상 물체</td><td>brush</td><td>tissue box — 논문의 0.647을 기대할 근거 없음</td></tr>
 </table></div>
@@ -323,6 +351,7 @@ virtual_object_control_scale_factor:   [1.0, 0.75, 0.5, 0.25, 0.1, 0.05, 0.025, 
 <tr><td>운동학적 검증 영상</td><td><code>robotic_grounding/out/tissue_box_refined.mp4</code>, <code>tissue_box_timing.mp4</code></td><td>물리 없음</td></tr>
 <tr><td>학습 로그·체크포인트</td><td><code>robotic_grounding/logs/rsl_rl/sharpa_v2d/2026-09-21_10-46-07_tissue_box_refined_8h/</code></td><td>model_0…4078.pt 22개, <code>params/env.yaml</code>, tensorboard</td></tr>
 <tr><td>정책 롤아웃 영상</td><td><code>…/videos/play/rl-video-step-0.mp4</code></td><td>물리 있음. 박스를 들지 않음</td></tr>
+<tr><td>품질 검사 결과</td><td><code>robotic_grounding/out/qc_penetration_real.json</code> (게이트 완화), <code>qc_penetration.json</code> (기본 설정 — skip된 결과), <code>out/qc_replay_refined/rl-video-step-0.mp4</code>, <code>out/qc_replay.log</code></td><td>센티넬 <code>sequence_id=tissue_box_refined/robot_name=sharpa_wave/.dummy_agent_ok</code></td></tr>
 <tr><td>타이밍</td><td><code>robotic_grounding/out/timing/stage_timing.{json,jsonl}</code>, <code>reconstruction/…/timing/stage_timing.json</code></td><td></td></tr>
 <tr><td>실행 스크립트</td><td><code>robotic_grounding/out/train_tissue_box_refined_8h.sh</code></td><td><code>train_tissue_box_timing.sh</code>는 폐기 대상</td></tr>
 </table></div>
@@ -336,13 +365,17 @@ virtual_object_control_scale_factor:   [1.0, 0.75, 0.5, 0.25, 0.1, 0.05, 0.025, 
   <li><code>level_result_bundle.py</code> — 축 평가와 적용이 같은 정규 탐색을 각각 수행(4 m × 2). 탐색 결과를 캐시하거나 <code>--up_rank</code> 비교를 내장하면 절반.</li>
   <li><code>out/timing/rg_time.sh</code> — 파이프라인 종료코드를 <code>pipefail</code> 없이 읽어 실패 1건을 complete로 기록.</li>
   <li><code>object_away_from_trajectory</code> 임계값 0.20 m — 동작 폭이 그보다 작은 클립에서는 종료 조건이 작동하지 않는다.</li>
+  <li><code>filter_penetrations.py</code>의 <code>hull_volume_ratio</code> 게이트 — 비-watertight 메시에서 <code>mesh.volume</code>이 붕괴해 볼록 물체를 오목으로 오분류하고 검사를 건너뛴다. 게다가 건너뛴 결과가 <code>score 0.0 / pass</code>로 보고돼 <b>실패를 통과로 읽게 만든다</b>. 최소한 skip 사유를 결과에 노출해야 하고, 판정 전에 <code>trimesh.repair</code>나 convex hull 자체를 쓰는 식의 메시 정상화가 필요하다.</li>
 </ul>
 <h3>7.2 다음 실험을 위한 제안</h3>
 <ul>
+  <li><b>품질 검사를 학습 앞에 둔다.</b> 이번 순서의 가장 큰 오류다. <code>scripts/data_assessor.py --checks hand_penetration,dummy_agent_success</code>를 리타게팅 직후에 돌리고, 탈락하면 학습을 시작하지 않는다. 8시간을 쓰기 전 2분이면 끝나는 검사다.</li>
+  <li><b>관통 2.19 cm를 먼저 줄인다.</b> 세 갈래가 있다 — gsplat 정제를 더 돌리거나(정제 자체가 관통을 2.11→1.25 cm 방향으로 줄였다), 리타게팅 IK에 관통 페널티를 넣거나, 메시를 watertight로 복원해 정제 손실이 물체 표면을 제대로 인식하게 한다.</li>
   <li><b>진단 지표부터.</b> 학습 중 물체 z 높이(또는 레퍼런스 대비 들림 비율)를 직접 기록해야 한다. 지금은 8시간 뒤 영상으로만 실패를 알 수 있다.</li>
   <li><b>예산을 VOC=0 구간에 몰기.</b> 비례 압축 대신 앞 단계를 줄이고 자력 구간을 길게(예: 4079 중 2000). 현재 395의 5배.</li>
   <li><b>물체 추종 가중치를 일찍 올리기.</b> 마지막 20.0 점프를 앞당기거나 완만하게. 지금은 8시간 내내 잡기만 연습하고 들기는 47분 연습한 구조다.</li>
   <li><b>기본 스케줄 전체 실행</b>(≈39 h)이 가능하면 압축 없이 비교 기준을 만든다.</li>
+  <li><b><code>contact_wrench_support_reward</code>를 켜서 비교 실험.</b> 논문의 핵심 보상을 끈 채로는 "CHORD 재현"이라 부르기 어렵다. gsplat 정제로 관통이 줄어든 만큼 접촉 기하 노이즈도 줄었을 수 있으니, 기본 가중치(10.0)로 한 번 돌려 force_closure 단독과 비교할 가치가 있다.</li>
   <li>재구성 측 개선 여지: 손 추적을 DynHaMR로 바꾸고, gsplat의 <code>w_hand_scale_prior</code>를 낮춰 논문 서술대로 스케일이 공동 최적화되는지 확인.</li>
 </ul>
 
