@@ -1,0 +1,417 @@
+<title>Tissue Box V2D 재현</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f5f7f6; --panel:#ffffff; --ink:#14181a; --ink-2:#4a5257; --ink-3:#7b858a;
+  --line:#d8ddda; --line-2:#e9ece9; --accent:#1e5f6a; --accent-soft:#dfeef0;
+  --code-bg:#eef1ef;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#0ca30c; --warn:#fab219; --crit:#d03b3b;
+  --grid:#e3e7e4;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151918; --panel:#1d2220; --ink:#eaedeb; --ink-2:#aeb6b2; --ink-3:#7f8884;
+    --line:#2f3634; --line-2:#262c2a; --accent:#63b6c2; --accent-soft:#1c3236;
+    --code-bg:#232927;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --grid:#2a302e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151918; --panel:#1d2220; --ink:#eaedeb; --ink-2:#aeb6b2; --ink-3:#7f8884;
+  --line:#2f3634; --line-2:#262c2a; --accent:#63b6c2; --accent-soft:#1c3236;
+  --code-bg:#232927;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --grid:#2a302e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  font-size:15px;line-height:1.7;font-variant-numeric:tabular-nums}
+.wrap{max-width:900px;margin:0 auto;padding-block:40px 72px;padding-inline:20px}
+h1,h2,h3{text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:clamp(26px,4vw,34px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:21px;font-weight:600;margin-top:56px;padding-top:20px;border-top:1px solid var(--line)}
+h3{font-size:16px;font-weight:600;margin-top:28px}
+p{max-width:68ch;margin:12px 0}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--accent);font-weight:500}
+.lede{color:var(--ink-2);font-size:16px;max-width:68ch}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:18px;font-size:13px;color:var(--ink-2)}
+.meta b{color:var(--ink);font-weight:500}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;font-size:.92em}
+code{background:var(--code-bg);padding:1px 5px;border-radius:3px}
+pre{background:var(--code-bg);border-radius:6px;padding:14px 16px;overflow-x:auto;font-size:13px;line-height:1.55;margin:14px 0}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font-weight:500;color:var(--ink-2);font-size:12.5px;letter-spacing:.03em;border-bottom:1px solid var(--line)}
+td.n,th.n{text-align:right}
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:26px 0}
+.verdict>div{background:var(--panel);padding:16px 18px}
+.verdict .k{font-size:12px;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;font-family:"IBM Plex Mono",monospace}
+.verdict .v{font-size:22px;font-weight:600;margin-top:4px;letter-spacing:-.01em}
+.verdict .v small{font-size:13px;font-weight:400;color:var(--ink-2);margin-left:6px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:2px 9px;border-radius:999px;
+  border:1px solid var(--line);white-space:nowrap}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.b-good{color:var(--good)} .b-warn{color:#b07a00} .b-crit{color:var(--crit)}
+:root[data-theme="dark"] .b-warn,:root:not([data-theme="light"]) .b-warn{color:var(--warn)}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 18px;border-radius:0 6px 6px 0;margin:18px 0}
+.callout p{margin:6px 0}
+.callout.crit{border-left-color:var(--crit);background:color-mix(in srgb,var(--crit) 9%,var(--panel))}
+
+/* pipeline rail */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:22px 0 8px}
+.flow>div{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:13px;position:relative}
+.flow>div b{display:block;font-size:14px;font-weight:600}
+.flow>div span{color:var(--ink-2)}
+.flow>div:not(:last-child)::after{content:"→";position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--ink-3);z-index:1}
+@media (max-width:640px){.flow{grid-template-columns:1fr}.flow>div:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-16px;transform:translateX(-50%)}}
+.stages{list-style:none;padding:0;margin:14px 0;counter-reset:st}
+.stages li{display:grid;grid-template-columns:34px 1fr;gap:0 12px;padding:10px 0;border-bottom:1px solid var(--line-2);counter-increment:st}
+.stages li::before{content:counter(st,decimal-leading-zero);font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);padding-top:3px}
+.stages .t{font-weight:600;font-size:14.5px}
+.stages .m{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-3);margin-left:8px;font-weight:400}
+.stages .d{color:var(--ink-2);font-size:13.5px;margin-top:2px}
+.stages .skip .t{color:var(--ink-3);font-weight:500}
+.stages .tag{font-size:11px;font-family:"IBM Plex Mono",monospace;color:var(--ink-3);border:1px solid var(--line);border-radius:3px;padding:0 5px;margin-left:8px;vertical-align:1px}
+
+/* charts */
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 18px 12px;margin:20px 0;position:relative}
+.fig h4{margin:0 0 2px;font-size:14px;font-weight:600}
+.fig .sub{font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
+.panel{position:relative}
+.panel .lbl{font-size:12px;color:var(--ink-2);margin:10px 0 0;display:flex;justify-content:space-between;align-items:baseline}
+.panel .lbl .leg{display:flex;gap:14px}
+.panel .lbl .leg i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px;border-radius:1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;fill:var(--ink-3)}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:6px;
+  padding:8px 10px;font-size:12px;line-height:1.5;box-shadow:0 4px 14px rgba(0,0,0,.12);display:none;z-index:5;min-width:170px}
+.tip b{font-family:"IBM Plex Mono",monospace;font-weight:500}
+.tip .r{display:flex;justify-content:space-between;gap:14px}
+.bars .row{display:grid;grid-template-columns:minmax(150px,240px) 1fr 62px;align-items:center;gap:10px;font-size:13px;padding:4px 0}
+.bars .row .name{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bars .row .bar{height:12px;border-radius:0 3px 3px 0;background:var(--s1);min-width:2px}
+.bars .row .val{text-align:right;color:var(--ink-2);font-family:"IBM Plex Mono",monospace;font-size:12px}
+.bars .row.hl .bar{background:var(--s2)}
+.paths li{margin:4px 0}
+ul{padding-left:20px}
+.small{font-size:13px;color:var(--ink-2)}
+hr.sp{border:0;border-top:1px solid var(--line);margin:40px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.bars .row .bar{transition:width .3s}}
+</style>
+
+<div class="wrap">
+<div class="eyebrow">Experiment report · 2026-09-20 ~ 09-22</div>
+<h1>티슈박스 ego 영상에서 Sharpa 정책까지 — CHORD Appendix C 재현 시도</h1>
+<p class="lede">단안 egocentric 영상 한 편(390 프레임)을 재구성 파이프라인에 통과시켜 metric 손·물체 궤적을 얻고, 이를 Sharpa Wave 플로팅 핸드로 리타게팅한 뒤 Isaac Lab에서 PPO로 8시간 학습했다. 재구성과 리타게팅은 모든 정량 게이트를 통과했으나, 학습된 정책은 박스를 들지 못했다. 이 문서는 동작한 모듈과 코드를 순서대로 기록하고, 실패의 원인과 지표의 맹점을 정리한다.</p>
+<div class="meta">
+  <span>입력 <b>tissue_box.mp4</b> (IMG_5969), 390 f @ 30 fps</span>
+  <span>물체 프롬프트 <b>"a tissue box"</b></span>
+  <span>임바디먼트 <b>sharpa_wave</b></span>
+  <span>GPU <b>A100 80GB ×1</b> (GPU 6; 7은 컨텍스트만)</span>
+  <span>저장소 <b>video_to_data @ dd395a73</b> (v0.3.0)</span>
+</div>
+
+<div class="verdict">
+  <div><div class="k">재구성 → 번들</div><div class="v"><span class="badge b-good">통과</span></div><div class="small">NaN 0, validity 100%, metric 보정·레벨링 후 실물 치수와 1 cm 내 일치</div></div>
+  <div><div class="k">리타게팅</div><div class="v"><span class="badge b-good">통과</span></div><div class="small">task error 2.28 / 2.32 cm, 2 cm 초과 관통 0%, frame-0 안착 0.00 cm</div></div>
+  <div><div class="k">PPO 학습 4078 iter</div><div class="v"><span class="badge b-good">완주</span><small>7 h 33 m</small></div><div class="small">VOC 0.0 도달, 에피소드 완주율 95.8%</div></div>
+  <div><div class="k">학습된 정책</div><div class="v"><span class="badge b-crit">실패</span></div><div class="small">영상 확인 결과 박스를 들지 않음. 학습 지표는 이 클립에서 실패를 감지할 수 없었음</div></div>
+</div>
+
+<!-- ============================================================ -->
+<h2>1. 파이프라인 개요</h2>
+<p>세 저장소 영역이 순서대로 관여한다. 재구성은 호스트 오케스트레이터가 단계별 Docker 이미지를 띄우는 구조이고, 그라운딩은 Isaac Lab 이미지 하나 안에서 로더·리타게터·학습기가 모두 돈다. 두 영역을 잇는 것은 <code>result.npz + mesh.obj + manifest.json</code> 세 파일로 이루어진 <b>result 번들</b>이다.</p>
+<div class="flow">
+  <div><b>Data</b><span>IMG_5969.mp4<br>run_wilor_pipeline.sh</span></div>
+  <div><b>Reconstruction</b><span>run_ego_reconstruction.py<br>→ 20+ 컨테이너 단계</span></div>
+  <div><b>Bundle 보정</b><span>scale_result_bundle.py<br>level_result_bundle.py</span></div>
+  <div><b>Robotic grounding</b><span>loader → IK → URDF/support<br>→ PPO → eval</span></div>
+</div>
+
+<h3>1.1 Data</h3>
+<ul class="paths">
+  <li><code>reconstruction/data/garage/tissue_box/IMG_5969.mp4</code> — 원본 egocentric 영상. 현재 저장소에는 파이프라인이 만든 <code>anycalib/undistorted.mp4</code>만 남아 있다.</li>
+  <li><code>reconstruction/data/garage/tissue_box/run_wilor_pipeline.sh</code> — 원본 실행 스크립트. <code>--run_gsplat_refinement</code>가 포함돼 있었으나 실제 첫 실행에서는 빠졌다 (manifest <code>run_gsplat_refinement: false</code>).</li>
+</ul>
+
+<h3>1.2 Reconstruction <span class="m">reconstruction/modules/</span></h3>
+<p>엔트리포인트는 <code>v2d_pipelines/run_ego_reconstruction.py --hand_tracking hamer</code>이고, 이것이 <code>run_ego_wilor.py</code>로 디스패치한다. 각 단계는 <code>v2d_docker/container.py</code>의 <code>run_in_container()</code>로 해당 이미지를 띄우며, 출력이 이미 존재하면 <code>_step()</code>이 건너뛴다(캐시). 단계 시간은 <code>v2d_common/stage_timing.py</code>가 stage·container 2계층으로 기록한다. 아래는 실행 순서다.</p>
+<ol class="stages">
+  <li><div><span class="t">AnyCalib undistortion <span class="m">v2d_anycalib</span></span><div class="d">렌즈 왜곡 제거와 초기 intrinsics 추정. 이후 모든 단계는 <code>anycalib/undistorted.mp4</code>를 입력으로 쓴다.</div></div></li>
+  <li><div><span class="t">Extract frames <span class="tag">host</span></span><div class="d">PNG 프레임 추출 → <code>frames/</code></div></div></li>
+  <li><div><span class="t">MoGe depth + intrinsics <span class="m">v2d_moge</span></span><div class="d">단안 metric 깊이. 논문이 말하는 파이프라인의 <b>metric 앵커</b>다 — 물체 크기, 손 스케일·이동, 카메라 궤적이 모두 이 깊이에 맞춰진다.</div></div></li>
+  <li><div><span class="t">Stabilise intrinsics <span class="tag">host</span></span><div class="d">프레임별 intrinsics를 하나로 안정화 → <code>intrinsics_stable.json</code></div></div></li>
+  <li><div><span class="t">DROID-SLAM trajectory <span class="m">v2d_droid_slam</span></span><div class="d">카메라 궤적(camera_to_world). MoGe 깊이에 스케일 정렬되며, gsplat 정제의 배경 pose field 초기값으로도 쓰인다.</div></div></li>
+  <li><div><span class="t">WiLoR per-frame detection + MANO <span class="m">v2d_wilor</span></span><div class="d">손 검출과 마스크. 이 경로에서는 SAM2의 손 프롬프트 소스(<code>sam2_hand_prompt_source: wilor_mask</code>)로만 쓰이고, 최종 손 포즈는 HaMeR이 낸다.</div></div></li>
+  <li><div><span class="t">Grounding DINO (ref frame) <span class="m">v2d_grounding_dino</span></span><div class="d">기준 프레임에서 텍스트 프롬프트 "a tissue box"로 물체 박스 검출.</div></div></li>
+  <li><div><span class="t">SAM2 mask propagation <span class="m">v2d_sam2</span></span><div class="d">물체(track 1)와 양손(track 2, 3) 마스크를 전체 영상으로 전파 → <code>masks/{1,2,3}/</code></div></div></li>
+  <li><div><span class="t">SAM3D mesh generation <span class="m">v2d_sam3d</span></span><div class="d">기준 프레임에서 텍스처 메시 생성. 스케일은 미정(up to scale). 첫 시도는 libusb 문제로 실패해 이미지를 재빌드했다(<code>timing_tissue_box_failed_sam3d/</code>).</div></div></li>
+  <li><div><span class="t">FoundationPose scale estimation <span class="m">v2d_foundation_pose</span></span><div class="d">SAM3D 메시를 MoGe 깊이에 등록해 metric 크기 추정 → <code>mesh_scaled.obj</code>, <code>scale.json</code></div></div></li>
+  <li><div><span class="t">FoundationPose tracking <span class="m">v2d_foundation_pose</span></span><div class="d">6-DoF 물체 포즈 추적 → <code>poses/</code></div></div></li>
+  <li><div><span class="t">EKF pose smoothing <span class="tag">host</span></span><div class="d">물체 포즈 시간축 평활화 → <code>poses_smoothed/</code></div></div></li>
+  <li><div><span class="t">HaMeR per-frame regression <span class="m">v2d_hamer</span></span><div class="d">SAM2 손 마스크를 크롭해 MANO 파라미터(betas, finger pose, global orient) 회귀. <b>오른손 전용 모델</b>이라 왼손은 이미지를 좌우 반전해 추론하고 결과를 다시 미러링한다. 그래서 재구성에는 <code>MANO_RIGHT.pkl</code>만 필요하다.</div></div></li>
+  <li><div><span class="t">Align HaMeR hands to depth <span class="m">v2d_hamer</span></span><div class="d">렌더한 손을 시선 방향으로 이동시켜 MoGe 깊이와 맞추고, 프레임별 이동과 <b>전역 손 스케일</b>(<code>hand_*_scale</code>)을 복원. 이 값이 1.47 / 1.52로 나온 것이 이후 모든 스케일 문제의 출발점이다.</div></div></li>
+  <li><div><span class="t">Interpolate HaMeR aligned frames <span class="tag">host</span></span><div class="d">누락 프레임 보간 → <code>hamer_aligned_filled/</code></div></div></li>
+  <li><div><span class="t">Simple 2DGS refinement <span class="m">v2d_gsplat_refinement</span></span><div class="d">물체·손 메시에 앵커된 가우시안 + 깊이 초기화 배경으로 L1 photometric 손실을 최소화. 물체 pose/scale, 손 root/articulation/shape/scale, 카메라 pose를 공동 최적화. <b>두 번째 실행에서 추가</b>됐다. → <code>poses_refined_simple/</code>, <code>hamer_refined_simple/</code>, <code>camera_refined_simple/</code>, <code>refined_object_scale.json</code></div></div></li>
+  <li><div><span class="t">GeoCalib intrinsics + gravity <span class="m">v2d_geocalib</span></span><div class="d">중력 방향 추정 → <code>geocalib/gravity.json</code></div></div></li>
+  <li><div><span class="t">Package result/ <span class="tag">host</span></span><div class="d"><code>write_result_bundle()</code>이 <code>_first_populated_dir()</code>로 가장 정제된 포즈·손 디렉터리를 골라 <code>result.npz</code>(23~27 키), <code>mesh.obj</code>, <code>manifest.json</code>으로 묶는다. <b>result/가 이미 있으면 건너뛰므로</b> 정제 후에는 기존 디렉터리를 옮겨야 재패키징된다.</div></div></li>
+  <li><div><span class="t">Gravity-align result_slam_gravity_aligned/ <span class="tag">host</span></span><div class="d">GeoCalib 중력을 -Z로 회전한 별도 번들. 4개의 gravity 키가 추가되며, 이것이 레벨러의 입력이 된다.</div></div></li>
+  <li><div><span class="t">Export Three.js result scene <span class="tag">host</span></span><div class="d">브라우저 뷰어 → <code>threejs_scene/</code></div></div></li>
+</ol>
+
+<h3>1.3 Bundle 보정 <span class="m">호스트 / rg-retarget 컨테이너</span></h3>
+<p>재구성이 낸 번들은 그대로 로더에 넣을 수 없었다. 두 가지 보정을 순서대로 적용했다.</p>
+<ol class="stages">
+  <li><div><span class="t">Metric 재스케일 <span class="m">reconstruction/scripts/scale_result_bundle.py</span></span><div class="d">손 스케일 평균 1.4463의 역수 <b>0.6914</b>를 모든 길이(camera/object/wrist translation, mesh 정점, hand_*_scale)에 곱한다. <code>object_to_camera</code> 회전 블록에 섞인 similarity scale을 분리(<code>_rigidify_similarity</code>)한 뒤 world transform을 재합성한다. 처음에는 같은 기능을 <code>rescale_result_bundle.py</code>로 중복 구현했다가 기존 도구를 발견해 삭제했다.</div></div></li>
+  <li><div><span class="t">중력 레벨링 <span class="m">v2d_task_library_loader/lib/level_result_bundle.py</span></span><div class="d">메시의 bbox-부피 최소화 정규 축을 찾고(2° 격자 × 0.25° 정밀 탐색, 34k 정점, 약 4분), 선택한 축(<code>--up_rank 1</code>, 중간 축)을 frame-0에서 +Z로 보내는 회전을 모든 <code>*_to_world</code>에 적용. 보정각 <b>7.01°</b>. 접촉 footprint 14.9×4.1 cm(모서리) → 20.3×10.3 cm(면). 축 세 개를 비교하는 보조 스크립트 <code>compare_up_ranks.py</code>를 <code>out/timing/</code>에 두어 정규 탐색을 한 번만 돌렸다.</div></div></li>
+</ol>
+
+<h3>1.4 Robotic grounding <span class="m">robotic_grounding/ · 컨테이너 robotic-grounding:latest (Isaac Lab 2.3.2)</span></h3>
+<p>컨테이너는 <code>--gpus device=6,7 --entrypoint /bin/sleep</code>로 띄웠다. 이미지는 GPL 격리 정책상 <code>manotorch</code>를 빼고 빌드되므로 로더 실행을 위해 <code>manotorch</code>, <code>chumpy</code>(<code>--no-build-isolation</code>), <code>v2d_common</code>, <code>v2d_task_library_loader</code>를 editable로 설치했다. 데이터셋 등록은 <code>retarget/dataset_registry.py</code>의 <code>ego_recon</code> 항목이 담당하며, 로더 산출물은 gitignore된 <code>.cache/ego_recon/loaded/</code>에, 나머지 에셋은 <code>assets/human_motion_data/ego_recon/processed/</code>에 놓인다.</p>
+<ol class="stages">
+  <li><div><span class="t">Loader <span class="m">v2d_task_library_loader/lib/ego_recon_loader.py</span></span><div class="d"><code>result.npz</code>의 MANO 파라미터를 <code>read_mano.py</code>(manotorch, <b>양손 레이어를 무조건 생성</b> → <code>MANO_LEFT.pkl</code> 필수)로 FK하여 21 관절 위치·접촉 라벨을 만들고 <code>loaded</code> Parquet으로 저장. <code>--ground_z_offset 1.0</code>(테이블 높이), <code>--no_ground_align</code>(이미 레벨링됨). 물체 메시를 <code>&lt;seq&gt;.obj</code>로 설치하며 이름 재사용 시 서명 불일치로 거부한다. world-repose 게이트 1.1e-7 / 1.2e-7 m.</div></div></li>
+  <li><div><span class="t">IK 리타게팅 <span class="m">scripts/retarget/ego_recon_to_sharpa.py</span></span><div class="d">pinocchio 기반 differential IK. 손목 pose와 fingertip residual을 추종하며 관절 한계를 지킨다. <code>--mano_to_robot_scale 1.2</code>(손 스케일 ≈1.0 전제). 번들이 metric이므로 <code>--surface_project</code>류 보정은 쓰지 않았다. 출력은 <code>motion_v1</code> 스키마 Parquet(62 컬럼: <code>robot_*_frames</code>, <code>*_task_errors</code>, 접촉 등).</div></div></li>
+  <li><div><span class="t">Rigid URDF <span class="m">scripts/generate_rigid_urdfs.py --dataset ego_recon</span></span><div class="d">메시에서 충돌 STL(<code>&lt;seq&gt;_visual.stl</code>)과 <code>&lt;seq&gt;_rigid.urdf</code> 생성.</div></div></li>
+  <li><div><span class="t">Support surface <span class="m">scripts/reconstruct_support_surfaces.py</span></span><div class="d">물체가 정지한 프레임(238개, 7 세그먼트)에서 접촉 디스크를 추정·병합 → <code>reconstructed_stage/&lt;seq&gt;_support.usda</code>. "kept 1 above ground"가 통과 조건이다.</div></div></li>
+  <li><div><span class="t">운동학적 검증 영상 <span class="m">scripts/retarget/vis_retargeted.py --save_mp4</span></span><div class="d">viser로 리타게팅 결과를 재생한 MP4. <b>물리 없음</b> — 박스는 지정된 자리에 그려질 뿐이다. → <code>out/tissue_box_refined.mp4</code></div></div></li>
+  <li><div><span class="t">PPO 학습 <span class="m">scripts/rsl_rl/train.py --task Sharpa-V2D-v0</span></span><div class="d">rsl_rl PPO, Hydra 오버라이드. 환경 정의 <code>tasks/v2d/v2d_hand_env_cfg.py</code>, 커리큘럼 <code>tasks/v2d/mdp/curriculum.py</code>(<code>FixedTimestepCurriculum</code>: VOC 스케일과 보상 가중치를 iteration 스케줄로 갱신), 종료 조건 <code>tasks/v2d/mdp/terminations.py</code>. 에이전트 설정 <code>config/sharpa_wave/agents/rsl_rl_ppo_cfg.py</code>(<code>num_steps_per_env 24</code>, <code>save_interval 200</code>). 해석된 전체 설정은 <code>logs/.../params/env.yaml</code>에 저장된다.</div></div></li>
+  <li><div><span class="t">평가·렌더 <span class="m">scripts/rsl_rl/eval.py --task Sharpa-V2D-v0-Play --video</span></span><div class="d">체크포인트를 로드해 1 env 롤아웃을 400 스텝 녹화. <b>물리 있음</b> — 이 영상만이 정책의 실제 행동이다. → <code>logs/.../videos/play/rl-video-step-0.mp4</code></div></div></li>
+</ol>
+
+<!-- ============================================================ -->
+<h2>2. 실행 경과</h2>
+
+<h3>2.1 환경 준비</h3>
+<div class="tbl"><table>
+<tr><th>항목</th><th>발견</th><th>조치</th></tr>
+<tr><td>Docker 이미지</td><td><code>robotic-grounding:latest</code> 없음 (재구성 이미지만 존재)</td><td><code>workflow/run.sh build</code> → 20.8 GB</td></tr>
+<tr><td>MANO</td><td>HaMeR/WiLoR 번들의 <code>MANO_RIGHT.pkl</code>만 존재. 재구성은 오른손 모델+반전으로 충분했으나 로더는 양손 레이어를 생성</td><td><code>MANO_LEFT.pkl</code>을 <code>weights/hamer/_DATA/data/models/</code>에 추가 (공유 체크포인트 볼륨, 미커밋)</td></tr>
+<tr><td>manotorch</td><td>이미지에서 의도적으로 제외됨 (GPL). <code>chumpy</code>는 <code>setup.py</code>가 pip을 import해 빌드 격리 실패</td><td>컨테이너 내 git 설치, <code>--no-build-isolation</code></td></tr>
+<tr><td>GPU 격리</td><td>호스트 <code>CUDA_VISIBLE_DEVICES</code>는 <code>--gpus all</code>에 전달되지 않음</td><td><code>--gpus device=6,7</code>. Isaac은 보이는 모든 디바이스에 컨텍스트를 만들어 nvidia-smi에 7번도 나타남(연산은 cuda:0=GPU 6)</td></tr>
+</table></div>
+
+<h3>2.2 번들 진단 (Step 0)</h3>
+<div class="tbl"><table>
+<tr><th>검사</th><th class="n">정제 전</th><th class="n">gsplat 정제 후</th><th>판정</th></tr>
+<tr><td>NaN / validity</td><td class="n">0 / 100%</td><td class="n">0 / 100%</td><td><span class="badge b-good">통과</span></td></tr>
+<tr><td>hand scale (L / R)</td><td class="n">1.5158 / 1.4739</td><td class="n">1.4471 / 1.4456</td><td><span class="badge b-crit">≈1.0 이어야 함</span></td></tr>
+<tr><td>물체 OBB</td><td class="n">31.8 × 17.3 × 16.4 cm</td><td class="n">29.4 × 16.0 × 15.2 cm</td><td>실물 ≈ 22 × 12.7 × 11.2 cm</td></tr>
+<tr><td>접촉 footprint (rest)</td><td class="n">21.3 × 4.6 cm</td><td class="n">14.9 × 4.1 cm</td><td><span class="badge b-crit">띠 = 모서리로 서 있음</span></td></tr>
+<tr><td>클립 전체 기울기</td><td class="n">5.6° ± 1.1°</td><td class="n">5.4° ± 1.1°</td><td>일정 → 월드 프레임 오차</td></tr>
+</table></div>
+<div class="callout">
+<p><b>hand_*_scale은 아무도 읽지 않는다.</b> 로더와 리타게터 어디에도 소비 코드가 없다. 단안 SLAM은 스케일을 정하지 못하고 손 피팅이 잔차를 흡수하는데, 하류가 손을 MANO 템플릿 크기로 만들면서 월드는 재구성 스케일 그대로 쓰니 손이 물체 대비 1.45배 작아진다. 번들 전체를 1/1.4463배 하면 손과 무관한 물체 치수가 <b>20.3 × 11.1 × 10.5 cm</b>로 실물에 근접해, 진단과 보정 계수가 교차검증된다.</p>
+<p><b>gsplat 정제는 스케일을 잡지 못했다.</b> 손 스케일이 3%, 물체 메시가 7.5%(<code>refined_object_scale 0.9252</code>) 움직였을 뿐이다. <code>--w_hand_scale_prior 10.0</code>이 학습된 스케일을 깊이 정렬 추정치에 강하게 묶어두기 때문이며, 논문의 "공동 최적화" 서술과 구현의 자유도가 다르다. 정제의 실질 효과는 다음 절의 관통 감소였다.</p>
+</div>
+
+<h3>2.3 리타게팅 품질 — 정제 전후 비교</h3>
+<div class="tbl"><table>
+<tr><th>지표</th><th class="n">tissue_box_timing (비정제)</th><th class="n">tissue_box_refined (정제)</th><th class="n">기준</th></tr>
+<tr><td>task error 우 (평균 / 최대)</td><td class="n">2.27 / 5.32 cm</td><td class="n">2.28 / 5.10 cm</td><td class="n">~2.2 / &lt;6</td></tr>
+<tr><td>task error 좌 (평균 / 최대)</td><td class="n">2.30 / 5.50 cm</td><td class="n">2.32 / 5.36 cm</td><td class="n">~2.2 / &lt;6</td></tr>
+<tr><td>관통 &gt;1 cm (우 / 좌)</td><td class="n">12.6% / 31.3%</td><td class="n"><b>2.1% / 20.3%</b></td><td class="n">—</td></tr>
+<tr><td>관통 &gt;2 cm (우 / 좌)</td><td class="n">0.3% / 0.0%</td><td class="n"><b>0.0% / 0.0%</b></td><td class="n">0%</td></tr>
+<tr><td>최심 관통 (우 / 좌)</td><td class="n">2.11 / 1.92 cm</td><td class="n"><b>1.25 / 1.28 cm</b></td><td class="n">—</td></tr>
+<tr><td>frame-0 안착 (메시 바닥 − 디스크 상면)</td><td class="n">−0.00 cm</td><td class="n">−0.00 cm</td><td class="n">±0.5</td></tr>
+<tr><td>world-repose 게이트</td><td class="n">1.2e-7 / 8.1e-8 m</td><td class="n">1.1e-7 / 1.2e-7 m</td><td class="n">~1e-7</td></tr>
+</table></div>
+<p class="small">관통은 물체 OBB(직육면체 근사) 기준이라 실제 메시 표면보다 보수적이다. 정제는 IK 자체를 개선하지 않았고(task error 불변), IK가 따라갈 목표인 손–물체 상대 배치를 다듬었다.</p>
+
+<h3>2.4 학습 설정</h3>
+<div class="two">
+<div>
+<p><b>레시피</b> — README "Ego-video (monocular) sequences"의 force-closure 레시피. 단안 접촉 기하가 노이지해 <code>contact_wrench_support_reward</code> 대신 <code>force_closure</code>(5.0)를 쓰고, 접촉 항 3개를 <code>env.rewards.*.weight</code>와 커리큘럼 <code>params.rewards_*</code> <b>두 곳 모두</b> 0으로 둔다.</p>
+<p><b>예산</b> — 4096 env, <code>--video</code> 없음. 실측 7.019 s/iter(n=29), 기동 153 s → 8시간 = <b>4079 iteration</b>. <code>--video</code>는 실측 14.4 s/iter로 2.06배 비용이라 학습 중에는 끄고 eval에서 렌더했다.</p>
+</div>
+<div>
+<p><b>커리큘럼 압축</b> — 기본 스케줄은 2000–15500에 걸치고 VOC가 0이 되는 지점이 14000(이 머신에서 약 27 h). 4079/15500 = 0.2632를 곱해 <code>timestep_schedule=[526,921,1316,1711,2105,2500,2895,3290,3684,4079]</code>로 넘겼다. VOC 0.0 도달 3684, 자력 구간 395 iteration.</p>
+<p>해석된 설정(<code>params/env.yaml</code>)으로 가중치와 스케줄이 의도대로 적용됐음을 확인했다.</p>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<h2>3. 학습 결과</h2>
+<p>아래 네 패널은 같은 iteration 축을 공유한다. 회색 점선은 커리큘럼 스텝이다. 마우스를 올리면 해당 시점의 값을 모두 볼 수 있다.</p>
+
+<div class="fig" id="curvefig">
+  <h4>학습 곡선 — tissue_box_refined_8h, 4079 iteration</h4>
+  <p class="sub">robotic_grounding/out/train_8h.log에서 매 44 iteration 샘플. 커리큘럼 스텝: 526 · 921 · 1316 · 1711 · 2105 · 2500 · 2895 · 3290 · 3684</p>
+  <div class="panel" data-k="voc"><div class="lbl"><span>가상 물체 보조 스케일 (VOC)</span><span class="mono">0 – 1</span></div><div class="svgbox"></div></div>
+  <div class="panel" data-k="away"><div class="lbl"><span>물체 이탈 종료 비율 <span class="mono">object_away_from_trajectory</span></span><span class="mono">0 – 0.55</span></div><div class="svgbox"></div></div>
+  <div class="panel" data-k="pos"><div class="lbl"><span>물체 위치 오차</span><span class="mono">cm</span></div><div class="svgbox"></div></div>
+  <div class="panel" data-k="wrist"><div class="lbl"><span>손목 위치 오차</span><span class="leg"><span><i style="background:var(--s1)"></i>오른손</span><span><i style="background:var(--s2)"></i>왼손</span></span></div><div class="svgbox"></div></div>
+  <div class="tip" id="tip"></div>
+</div>
+
+<div class="tbl"><table>
+<tr><th class="n">iter</th><th class="n">VOC</th><th class="n">objAway</th><th class="n">완주율</th><th class="n">물체 오차</th><th class="n">손목 우 / 좌</th><th class="n">objTrk 보상</th><th class="n">mean reward</th></tr>
+<tr><td class="n">400</td><td class="n">1.000</td><td class="n">0.006</td><td class="n">0.994</td><td class="n">1.3 cm</td><td class="n">2.2 / 2.8 cm</td><td class="n">0.000</td><td class="n">49.8</td></tr>
+<tr><td class="n">921</td><td class="n">0.500</td><td class="n">0.060</td><td class="n">0.943</td><td class="n">9.4 cm</td><td class="n">4.4 / 6.6 cm</td><td class="n">0.047</td><td class="n">54.6</td></tr>
+<tr><td class="n">1000</td><td class="n">0.500</td><td class="n"><b>0.518</b></td><td class="n"><b>0.491</b></td><td class="n">11.3 cm</td><td class="n">4.0 / 6.6 cm</td><td class="n">0.103</td><td class="n">47.9</td></tr>
+<tr><td class="n">1200</td><td class="n">0.500</td><td class="n">0.126</td><td class="n">0.880</td><td class="n">11.3 cm</td><td class="n">3.5 / 6.9 cm</td><td class="n">0.109</td><td class="n">52.5</td></tr>
+<tr><td class="n">2500</td><td class="n">0.025</td><td class="n">0.062</td><td class="n">0.938</td><td class="n">5.3 cm</td><td class="n">10.6 / 8.6 cm</td><td class="n">0.233</td><td class="n">64.8</td></tr>
+<tr><td class="n">3684</td><td class="n">0.000</td><td class="n">0.076</td><td class="n">0.918</td><td class="n">4.2 cm</td><td class="n">16.9 / 7.6 cm</td><td class="n">0.835</td><td class="n">84.6</td></tr>
+<tr><td class="n">4078</td><td class="n">0.000</td><td class="n">0.042</td><td class="n">0.958</td><td class="n">3.7 cm</td><td class="n">17.1 / 8.2 cm</td><td class="n">10.97 <span class="small">(가중치 20×)</span></td><td class="n">353.6</td></tr>
+</table></div>
+<p>숫자만 보면 성공처럼 읽힌다. 보조가 100배 줄어드는 동안 이탈률은 0.6% → 4.2%에 머물고, iteration 1000의 위기(이탈 51.8%)를 200 iteration 만에 회복했으며, 물체 오차는 11.3 → 3.7 cm로 내려갔다. 이 판독을 근거로 학습 중 "잘 되고 있다"고 판단했다.</p>
+
+<h3>3.1 영상 확인 — 정책은 박스를 들지 않는다</h3>
+<div class="callout crit">
+<p><b>eval 영상(400 스텝, 물리 롤아웃)에서 정책은 박스를 들어올리지 않았다.</b> 레퍼런스는 분명히 든다 — 물체 z 범위 15.4 cm, 전체 프레임의 49.5%가 바닥에서 2 cm 이상 떠 있고, 수평 이동은 3 cm뿐인 "들었다 놓는" 동작이다.</p>
+</div>
+<p>지표가 실패를 보이지 못한 이유는 두 가지이고, 둘 다 이 클립의 동작 폭에서 비롯된다.</p>
+<div class="tbl"><table>
+<tr><th>지표</th><th>보고된 값</th><th>박스가 전혀 움직이지 않을 때의 값</th><th>결론</th></tr>
+<tr><td><code>object_away_from_trajectory</code> 종료율</td><td class="n">4.2%</td><td class="n">임계값 <b>0.20 m</b> 대비 레퍼런스 최대 이탈 <b>0.1555 m</b></td><td>안 들어도 종료 불가. 완주율 95.8%는 무동작 정책도 받는 점수</td></tr>
+<tr><td><code>object_body_position_error</code></td><td class="n">3.71 cm</td><td class="n">frame-0에 정지 시 평균 <b>5.78</b> / 중앙값 <b>3.41</b> cm</td><td>정지와 구분되지 않는 값</td></tr>
+</table></div>
+
+<h3>3.2 실패 원인 — 예산이 잘못된 구간에 갔다</h3>
+<p>커리큘럼의 물체 추종 가중치 스케줄은 마지막 단계에서만 뛴다:</p>
+<pre><code>rewards_object_keypoints_tracking_exp: [0.0, 0.1, 0.25, 0.25, 0.5, 0.5, 1.0, 1.0, 1.0, <b>20.0</b>]
+virtual_object_control_scale_factor:   [1.0, 0.75, 0.5, 0.25, 0.1, 0.05, 0.025, 0.01, <b>0.0</b>, 0.0]</code></pre>
+<p>학습 대부분에서 물체 추종 가중치는 ≤1.0, <code>force_closure</code>는 5.0이었다. 정책은 <b>잡는 자세</b>를 최적화할 동기는 강했지만 <b>들 동기</b>는 거의 없었고, 그동안 박스는 VOC가 들어주고 있었다. VOC가 0이 되고 추종 가중치가 20으로 뛰는 iteration 3684 이후 남은 것은 395 iteration이었다.</p>
+<div class="tbl"><table>
+<tr><th></th><th class="n">VOC = 0 시점</th><th class="n">이후 남은 iteration</th></tr>
+<tr><td>기본 스케줄 (20000)</td><td class="n">14000</td><td class="n"><b>6000</b></td></tr>
+<tr><td>압축 스케줄 (4079)</td><td class="n">3684</td><td class="n"><b>395</b></td></tr>
+</table></div>
+<p>비례 압축은 단계별 샘플을 1/4로 줄인다고 예고했지만, 결정적인 마지막 구간은 <b>1/15</b>로 줄었다. 자력으로 드는 법을 배우는 데 필요한 것은 비율이 아니라 절대 샘플 수였다. 손목 오차가 오른손 17.1 cm / 왼손 8.2 cm로 벌어진 것도 같은 맥락에서 재해석된다 — CHORD가 허용하는 "다른 파지 자세"가 아니라, 레퍼런스를 따르지도 물체를 들지도 못한 상태다.</p>
+
+<!-- ============================================================ -->
+<h2>4. 논문(CHORD)과의 차이</h2>
+<p>재현 대상은 Appendix C "CHORD Validation from Human Video"(brush 조작, ADD-AUC 0.647)다. 이번 실행은 다음 지점에서 논문과 다르며, 결과 해석 시 감안해야 한다.</p>
+<div class="tbl"><table>
+<tr><th>항목</th><th>논문</th><th>이번 실행</th></tr>
+<tr><td>학습 알고리즘</td><td><b>FlashSAC</b>, 2048 env, L40S 1장, ≈2 h / 시퀀스</td><td><b>PPO (rsl_rl)</b>, 4096 env, A100 1장, 7 h 33 m. 저장소에 FlashSAC 없음</td></tr>
+<tr><td>커리큘럼</td><td>기본 스케줄 (추정)</td><td>0.2632배 압축</td></tr>
+<tr><td>손 추적</td><td>ViPE + DynHaMR</td><td>HaMeR (<code>--hand_tracking hamer</code>)</td></tr>
+<tr><td>metric 정합</td><td>MoGe 앵커 + gsplat 공동 최적화로 스케일 결정</td><td>MoGe 정렬·gsplat 실행했으나 손 스케일 1.45 잔존 → <code>scale_result_bundle.py</code> 수동 재스케일 + 7.01° 레벨링 추가</td></tr>
+<tr><td>평가 지표</td><td>ADD-AUC (DexMachina 정의)</td><td>미구현. 논문 수치와 직접 비교 불가</td></tr>
+<tr><td>대상 물체</td><td>brush</td><td>tissue box — 논문의 0.647을 기대할 근거 없음</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2>5. 소요 시간</h2>
+<p>재구성 측은 <code>v2d_common/stage_timing.py</code>가, 그라운딩 측은 같은 스키마(<code>v2d.stage_timing.v1</code>)로 기록하도록 만든 래퍼 <code>out/timing/rg_time.sh</code>가 측정했다. 캐시로 건너뛴 단계는 제외.</p>
+<div class="verdict">
+  <div><div class="k">재구성 (1차, gsplat 없음)</div><div class="v">9.6 m</div><div class="small">26 단계 중 11 실행. 오버레이 렌더 3종이 8.5 m</div></div>
+  <div><div class="k">재구성 (2차, gsplat 정제)</div><div class="v">11.1 m</div><div class="small">Simple 2DGS refinement 8.1 m + 오버레이 2.7 m</div></div>
+  <div><div class="k">그라운딩 준비</div><div class="v">27.3 m</div><div class="small">레벨링 브루트포스 4회(16.2 m)가 60%</div></div>
+  <div><div class="k">PPO 학습</div><div class="v">7 h 33 m</div><div class="small">4078 iter, 6.3–6.6 s/iter 실측. eval+렌더 98 s</div></div>
+</div>
+<div class="fig"><h4>그라운딩 준비 단계별 wall time</h4><p class="sub">학습·벤치마크 제외. 두 시퀀스(비정제·정제) 각각의 단계를 모두 포함. 주황 = 레벨링의 정규 축 브루트포스(4회, 전체의 60%)</p>
+<div class="bars" id="bars"></div></div>
+
+<!-- ============================================================ -->
+<h2>6. 산출물</h2>
+<div class="tbl"><table>
+<tr><th>산출물</th><th>경로 (저장소 루트 기준)</th><th>비고</th></tr>
+<tr><td>정제 번들 (원본)</td><td><code>reconstruction/data/outputs/timing_tissue_box/result_slam_gravity_aligned/</code></td><td>비정제 원본은 <code>*_prerefine/</code></td></tr>
+<tr><td>재스케일 → 레벨링 번들</td><td><code>…/result_refined_scaled/</code> → <code>…/result_refined_leveled/</code></td><td>manifest에 <code>scene_scale_applied</code>, <code>world_leveling_correction</code> 기록</td></tr>
+<tr><td>정제 오버레이 영상</td><td><code>…/refined_simple_overlay.mp4</code>, <code>hamer_refined_simple_overlay.mp4</code>, <code>progress_simple.mp4</code></td><td></td></tr>
+<tr><td>리타게팅 에셋</td><td><code>robotic_grounding/…/ego_recon/processed/tissue_box_refined*</code>, <code>sequence_id=tissue_box_refined/</code>, <code>reconstructed_stage/tissue_box_refined_support.usda</code></td><td><b>미커밋</b>. <code>tissue_box_timing*</code>(비정제)도 함께 남아 있음</td></tr>
+<tr><td>운동학적 검증 영상</td><td><code>robotic_grounding/out/tissue_box_refined.mp4</code>, <code>tissue_box_timing.mp4</code></td><td>물리 없음</td></tr>
+<tr><td>학습 로그·체크포인트</td><td><code>robotic_grounding/logs/rsl_rl/sharpa_v2d/2026-09-21_10-46-07_tissue_box_refined_8h/</code></td><td>model_0…4078.pt 22개, <code>params/env.yaml</code>, tensorboard</td></tr>
+<tr><td>정책 롤아웃 영상</td><td><code>…/videos/play/rl-video-step-0.mp4</code></td><td>물리 있음. 박스를 들지 않음</td></tr>
+<tr><td>타이밍</td><td><code>robotic_grounding/out/timing/stage_timing.{json,jsonl}</code>, <code>reconstruction/…/timing/stage_timing.json</code></td><td></td></tr>
+<tr><td>실행 스크립트</td><td><code>robotic_grounding/out/train_tissue_box_refined_8h.sh</code></td><td><code>train_tissue_box_timing.sh</code>는 폐기 대상</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2>7. 남은 문제와 다음 단계</h2>
+<h3>7.1 코드 결함 (발견, 미수정)</h3>
+<ul>
+  <li><code>scripts/rsl_rl/eval.py</code> — <code>viewer.env_index=6</code>을 클램프하지 않아 <code>--num_envs &lt; 7</code>이면 항상 실패. <code>dummy_agent.py</code>의 두 줄을 옮기면 된다. 이번엔 <code>env.viewer.env_index=0</code>으로 우회.</li>
+  <li><code>run_ego_wilor.py</code> 결과 패키징 — <code>result/</code>가 존재하면 건너뛰어 정제 결과가 번들에 반영되지 않는다. 정제 플래그가 켜졌을 때는 재패키징해야 한다.</li>
+  <li><code>level_result_bundle.py</code> — 축 평가와 적용이 같은 정규 탐색을 각각 수행(4 m × 2). 탐색 결과를 캐시하거나 <code>--up_rank</code> 비교를 내장하면 절반.</li>
+  <li><code>out/timing/rg_time.sh</code> — 파이프라인 종료코드를 <code>pipefail</code> 없이 읽어 실패 1건을 complete로 기록.</li>
+  <li><code>object_away_from_trajectory</code> 임계값 0.20 m — 동작 폭이 그보다 작은 클립에서는 종료 조건이 작동하지 않는다.</li>
+</ul>
+<h3>7.2 다음 실험을 위한 제안</h3>
+<ul>
+  <li><b>진단 지표부터.</b> 학습 중 물체 z 높이(또는 레퍼런스 대비 들림 비율)를 직접 기록해야 한다. 지금은 8시간 뒤 영상으로만 실패를 알 수 있다.</li>
+  <li><b>예산을 VOC=0 구간에 몰기.</b> 비례 압축 대신 앞 단계를 줄이고 자력 구간을 길게(예: 4079 중 2000). 현재 395의 5배.</li>
+  <li><b>물체 추종 가중치를 일찍 올리기.</b> 마지막 20.0 점프를 앞당기거나 완만하게. 지금은 8시간 내내 잡기만 연습하고 들기는 47분 연습한 구조다.</li>
+  <li><b>기본 스케줄 전체 실행</b>(≈39 h)이 가능하면 압축 없이 비교 기준을 만든다.</li>
+  <li>재구성 측 개선 여지: 손 추적을 DynHaMR로 바꾸고, gsplat의 <code>w_hand_scale_prior</code>를 낮춰 논문 서술대로 스케일이 공동 최적화되는지 확인.</li>
+</ul>
+
+<hr class="sp">
+<p class="small">모든 실행은 GPU 6/7로 제한했으며(<code>--gpus device=6,7</code>), 재구성 오케스트레이션은 <code>~/v2d_recon</code> 가상환경, 그라운딩은 <code>rg-retarget</code> 컨테이너에서 수행했다. 본 문서의 수치는 <code>out/train_8h.log</code>, <code>params/env.yaml</code>, <code>timing/stage_timing.json</code>, 그리고 세션 중 실행한 검증 스크립트 출력에서 그대로 가져왔다.</p>
+</div>
+
+<script>
+const D = {"it":[0,45,90,135,180,225,270,315,360,405,450,495,540,585,630,675,720,765,810,855,900,945,990,1035,1080,1125,1170,1215,1260,1305,1350,1395,1440,1485,1530,1575,1620,1665,1710,1755,1800,1845,1890,1935,1980,2025,2070,2115,2160,2205,2250,2295,2340,2385,2430,2475,2520,2565,2610,2655,2700,2745,2790,2835,2880,2925,2970,3015,3060,3105,3150,3195,3240,3285,3330,3375,3420,3465,3510,3555,3600,3645,3690,3735,3780,3825,3870,3915,3960,4005,4050,4078],"voc":[1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.75,0.75,0.75,0.75,0.75,0.75,0.75,0.75,0.75,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.025,0.025,0.025,0.025,0.025,0.025,0.025,0.025,0.025,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"away":[0.0,0.0038,0.0023,0.0029,0.0022,0.0044,0.005,0.006,0.0054,0.0064,0.0051,0.0049,0.006,0.0074,0.0047,0.0048,0.0038,0.0062,0.0052,0.0062,0.0081,0.5578,0.5413,0.4755,0.393,0.2766,0.1764,0.0942,0.0516,0.0206,0.1771,0.0735,0.0532,0.039,0.0326,0.0298,0.0275,0.0213,0.0263,0.335,0.083,0.0557,0.051,0.045,0.0378,0.0402,0.0366,0.166,0.1382,0.1057,0.0865,0.0821,0.0625,0.0663,0.0588,0.0569,0.2161,0.156,0.1506,0.113,0.0995,0.1078,0.1078,0.0772,0.0581,0.1217,0.1031,0.0933,0.0739,0.0622,0.0567,0.0612,0.0546,0.0669,0.133,0.102,0.0828,0.0685,0.0616,0.054,0.0589,0.0579,0.0719,0.0588,0.0474,0.0794,0.0638,0.0538,0.0538,0.0498,0.0439,0.0416],"pos":[0.0004,0.0069,0.009,0.008,0.0095,0.0072,0.0081,0.0092,0.0116,0.0115,0.0186,0.0235,0.0333,0.0403,0.0615,0.0643,0.064,0.0766,0.0861,0.0822,0.0949,0.1117,0.115,0.1114,0.1151,0.117,0.1162,0.1123,0.0944,0.0721,0.0566,0.0519,0.0529,0.0525,0.0558,0.0561,0.0586,0.0561,0.0578,0.0538,0.0438,0.0429,0.0388,0.0344,0.0382,0.0397,0.0459,0.0543,0.0497,0.0541,0.0529,0.0461,0.0413,0.0394,0.0424,0.0442,0.044,0.0449,0.0429,0.0432,0.0446,0.0463,0.0463,0.0464,0.0378,0.0421,0.0381,0.0445,0.0413,0.0376,0.0398,0.038,0.038,0.0347,0.0417,0.0427,0.042,0.037,0.0367,0.038,0.0396,0.0413,0.04,0.0394,0.0361,0.0412,0.0346,0.0353,0.0377,0.0387,0.0339,0.0371],"rot":[0.0001,0.0109,0.0129,0.0108,0.0186,0.0127,0.0144,0.0197,0.0232,0.0276,0.0493,0.0675,0.1029,0.1281,0.2206,0.2297,0.2395,0.2933,0.3296,0.3163,0.3528,0.4648,0.4544,0.4367,0.4361,0.4151,0.3802,0.3078,0.215,0.1389,0.0986,0.0462,0.0339,0.0275,0.0293,0.0133,0.022,0.0131,0.0167,0.195,0.0606,0.0552,0.0464,0.0392,0.0392,0.0494,0.0436,0.1958,0.135,0.1316,0.1227,0.1018,0.1054,0.1047,0.1181,0.1145,0.3255,0.2669,0.2651,0.2511,0.2382,0.2153,0.219,0.2081,0.1796,0.3745,0.313,0.2775,0.2332,0.2394,0.1854,0.216,0.1731,0.1793,0.2429,0.2132,0.1821,0.1696,0.1513,0.1547,0.1752,0.1889,0.1643,0.1895,0.1523,0.1781,0.1137,0.0866,0.0821,0.0805,0.0632,0.0751],"rw":[0.0006,0.0157,0.016,0.0164,0.0163,0.0169,0.0179,0.0187,0.0202,0.0216,0.0214,0.0221,0.022,0.0229,0.0244,0.0245,0.0252,0.0263,0.0266,0.0286,0.0294,0.0394,0.0394,0.0383,0.0376,0.0376,0.0366,0.0362,0.0323,0.0345,0.039,0.0372,0.0376,0.0394,0.0417,0.0434,0.0451,0.0479,0.0498,0.0515,0.0532,0.0567,0.0588,0.0628,0.0664,0.0714,0.0747,0.0737,0.0781,0.0846,0.0888,0.0947,0.1012,0.1064,0.109,0.1133,0.1016,0.1093,0.1114,0.1155,0.1179,0.1206,0.1237,0.1279,0.1342,0.1282,0.1345,0.137,0.1413,0.1425,0.1459,0.1452,0.1523,0.1531,0.1468,0.1517,0.1579,0.1604,0.1655,0.1651,0.1652,0.1645,0.171,0.1684,0.1734,0.1694,0.1748,0.1763,0.1748,0.1723,0.1737,0.1708],"lw":[0.0006,0.0367,0.0375,0.0371,0.0371,0.0345,0.0328,0.0314,0.029,0.0273,0.0286,0.0289,0.0275,0.0294,0.0405,0.0417,0.0428,0.0513,0.0569,0.0565,0.0638,0.0652,0.0668,0.0653,0.0673,0.0682,0.0696,0.0686,0.0648,0.0584,0.045,0.0415,0.0412,0.042,0.0441,0.0465,0.0475,0.0506,0.0526,0.0561,0.0555,0.0585,0.0606,0.0644,0.0668,0.071,0.073,0.0679,0.0749,0.0782,0.0815,0.0848,0.0877,0.0912,0.0916,0.0928,0.0847,0.0881,0.0864,0.0876,0.0884,0.0895,0.0886,0.0886,0.0887,0.0825,0.0852,0.0847,0.0861,0.0846,0.0831,0.0821,0.0831,0.0813,0.0763,0.0757,0.0771,0.0758,0.0774,0.0765,0.0762,0.0751,0.0757,0.0769,0.0775,0.0791,0.0826,0.0851,0.084,0.0824,0.083,0.082],"rew":[0.53,38.62,45.02,40.39,39.89,40.45,39.63,47.17,49.6,47.41,48.41,53.15,46.25,51.35,53.78,46.5,58.03,49.72,49.98,54.6,58.8,46.41,53.05,51.32,57.64,55.49,56.21,51.74,60.95,52.95,53.59,51.1,56.8,61.21,52.01,58.06,54.56,55.33,60.24,54.67,53.66,51.96,50.95,59.27,56.33,57.27,61.69,57.97,60.95,56.95,55.12,59.52,60.18,59.14,58.88,63.91,55.77,56.73,63.47,66.1,66.64,67.85,63.55,69.38,67.25,54.77,59.26,63.96,65.5,67.98,68.17,59.95,64.5,62.93,55.21,62.32,62.14,70.65,67.92,66.81,66.2,74.63,173.44,293.15,285.86,306.17,309.22,309.59,334.89,305.71,306.18,353.63],"fc":[0.0,1.258,1.3288,1.287,1.2837,1.3038,1.3379,1.4672,1.5406,1.5764,1.6815,1.7072,1.6931,1.6647,1.7361,1.691,1.7912,1.7837,1.8148,1.7868,1.8394,1.7381,1.7199,1.775,1.7899,1.7726,1.7823,1.7952,1.8293,1.7632,1.6481,1.658,1.7886,1.8932,1.7462,1.7651,1.8031,1.7991,1.7708,1.6739,1.7526,1.8342,1.6772,1.7285,1.7781,1.8136,1.7112,1.6498,1.8089,1.731,1.8483,1.9334,1.9444,1.7196,1.8666,1.9175,1.6413,1.6992,1.7545,1.8034,1.8416,1.8379,1.8471,1.9554,1.8901,1.675,1.7729,1.9265,1.8909,1.8349,1.8947,1.8732,1.9851,1.8805,1.8015,1.8643,1.8413,1.9452,1.9224,1.8089,1.9065,1.9281,1.8251,1.864,1.8817,1.9775,1.8538,1.8376,1.9328,1.7795,1.7559,1.9079]};
+const STEPS=[526,921,1316,1711,2105,2500,2895,3290,3684];
+const N=D.it.length, XMAX=4079;
+const cssVar=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+function panelSVG(key){
+  const W=860,H=130,L=44,R=10,T=8,B=20;
+  const pw=W-L-R, ph=H-T-B;
+  const series = key==='wrist'
+    ? [{k:'rw',c:'var(--s1)',name:'오른손'},{k:'lw',c:'var(--s2)',name:'왼손'}]
+    : [{k:key,c:'var(--s1)'}];
+  const scale = key==='voc'?1:(key==='away'?1:100);
+  let ymax = key==='voc'?1:(key==='away'?0.55:(key==='pos'?12:18));
+  const x=i=>L+D.it[i]/XMAX*pw, y=v=>T+ph-(v*scale)/ymax*ph;
+  const ticks = key==='voc'?[0,0.5,1]:(key==='away'?[0,0.25,0.5]:(key==='pos'?[0,6,12]:[0,9,18]));
+  let s=`<svg viewBox="0 0 ${W} ${H}" data-key="${key}">`;
+  ticks.forEach(t=>{const yy=T+ph-t/ymax*ph;s+=`<line x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}" stroke="var(--grid)" stroke-width="1"/><text x="${L-6}" y="${yy+3.5}" text-anchor="end">${t}</text>`;});
+  STEPS.forEach(st=>{const xx=L+st/XMAX*pw;s+=`<line x1="${xx}" x2="${xx}" y1="${T}" y2="${T+ph}" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="2 4" opacity=".55"/>`;});
+  if(key==='wrist'){[0,1000,2000,3000,4079].forEach(v=>{const xx=L+v/XMAX*pw;s+=`<text x="${xx}" y="${H-5}" text-anchor="${v===0?'start':(v===4079?'end':'middle')}">${v}</text>`;});}
+  series.forEach(sr=>{
+    let d='';
+    for(let i=0;i<N;i++){d+=(i?'L':'M')+x(i).toFixed(1)+' '+y(D[sr.k][i]).toFixed(1)+' ';}
+    s+=`<path d="${d}" fill="none" stroke="${sr.c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    const last=N-1;
+    s+=`<circle cx="${x(last)}" cy="${y(D[sr.k][last])}" r="3.5" fill="${sr.c}" stroke="var(--panel)" stroke-width="2"/>`;
+  });
+  s+=`<line class="cross" x1="0" x2="0" y1="${T}" y2="${T+ph}" stroke="var(--ink)" stroke-width="1" opacity="0"/>`;
+  s+=`</svg>`;
+  return s;
+}
+document.querySelectorAll('#curvefig .panel').forEach(p=>{p.querySelector('.svgbox').innerHTML=panelSVG(p.dataset.k);});
+
+const fig=document.getElementById('curvefig'), tip=document.getElementById('tip');
+const crosses=[...fig.querySelectorAll('svg .cross')];
+function near(px,svg){const r=svg.getBoundingClientRect();const L=44,R=10,W=860;const pw=(W-L-R)*(r.width/W);const it=(px-r.left-L*(r.width/W))/pw*XMAX;let bi=0,bd=1e9;for(let i=0;i<N;i++){const d=Math.abs(D.it[i]-it);if(d<bd){bd=d;bi=i;}}return bi;}
+fig.addEventListener('mousemove',e=>{
+  const svg=fig.querySelector('svg');const i=near(e.clientX,svg);
+  const xx=44+D.it[i]/XMAX*(860-54);
+  crosses.forEach(c=>{c.setAttribute('x1',xx);c.setAttribute('x2',xx);c.setAttribute('opacity','.6');});
+  tip.style.display='block';
+  const fr=fig.getBoundingClientRect();
+  let lx=e.clientX-fr.left+14; if(lx+200>fr.width) lx=e.clientX-fr.left-214;
+  tip.style.left=lx+'px'; tip.style.top=(e.clientY-fr.top+10)+'px';
+  tip.innerHTML=`<div class="r"><span>iteration</span><b>${D.it[i]}</b></div>
+  <div class="r"><span>VOC</span><b>${D.voc[i].toFixed(3)}</b></div>
+  <div class="r"><span>objAway</span><b>${D.away[i].toFixed(3)}</b></div>
+  <div class="r"><span>물체 오차</span><b>${(D.pos[i]*100).toFixed(1)} cm</b></div>
+  <div class="r"><span>손목 우 / 좌</span><b>${(D.rw[i]*100).toFixed(1)} / ${(D.lw[i]*100).toFixed(1)} cm</b></div>
+  <div class="r"><span>reward</span><b>${D.rew[i].toFixed(1)}</b></div>`;
+});
+fig.addEventListener('mouseleave',()=>{tip.style.display='none';crosses.forEach(c=>c.setAttribute('opacity','0'));});
+
+const bars=[
+ ['Evaluate leveling axes (비정제)',248.5],['Level bundle up_rank=1 (비정제)',248.4],
+ ['Level refined bundle up_rank=1',241.9],['Evaluate leveling axes (정제)',237.8],
+ ['Render verification MP4 (정제)',47.4],['Render verification MP4 (비정제)',47.4],
+ ['Retarget → sharpa_wave (비정제)',30.3],['Retarget → sharpa_wave (정제)',27.1],
+ ['Load → loaded Parquet (비정제)',15.9],['Load → loaded Parquet (정제)',12.1],
+ ['Install manotorch (git)',9.2],['Install loader deps',5.6],['URDF + support (정제)',4.7],
+ ['Reconstruct support surface (비정제)',3.5],['Verify MANO both-hand FK',2.6],
+ ['Generate rigid URDFs',1.1],['Start container',1.0],['Rescale bundle',0.4]];
+const mx=Math.max(...bars.map(b=>b[1]));
+document.getElementById('bars').innerHTML=bars.map(([n,v])=>`<div class="row${v>200?' hl':''}" title="${n}: ${v.toFixed(1)} s"><span class="name">${n}</span><div><div class="bar" style="width:${(v/mx*100).toFixed(1)}%"></div></div><span class="val">${v>=60?(v/60).toFixed(1)+' m':v.toFixed(1)+' s'}</span></div>`).join('');
+</script>
