@@ -1,3 +1,4 @@
+FoundationPose.pdf, https://arxiv.org/pdf/2312.08344
 UnderstandingDeepLearning.pdf, https://github.com/udlbook/udlbook/releases/download/v5.0.3/UnderstandingDeepLearning_02_09_26_C.pdf
 SPIDER.pdf, https://arxiv.org/pdf/2511.09484
 DexMachina.pdf, https://arxiv.org/pdf/2505.24853
