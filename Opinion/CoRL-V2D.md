@@ -12,6 +12,15 @@ kubectl --kubeconfig <path> auth can-i create jobs     # yes
 rlwrld/k8s/render.py smoke --apply --deadline 3600 --ttl 3600
 kubectl --kubeconfig <path> logs -f job/<you>-v2d-smoke   # last line: SMOKE_ALL_OK 17/17
 ```
-의 마지막 줄 실행 결과 기다리는 중. 
+의 마지막 줄 실행 결과 기다리는 중. -> 완료
+```
+wongyun@sim:~/CoRL-V2D$ kubectl logs -f job/sungjae-v2d-smoke
+NVIDIA L40S, 46068 MiB, 580.178.04, 8.9
+OK   shim:anycalib  [smoke] env=/opt/envs/anycalib torch=2.7.1+cu128 cuda_build=12.8 gpu=True torch_from=/opt/conda/lib/python3.11/site-pack
+OK   shim:moge  [smoke] env=/opt/envs/moge torch=2.7.1+cu128 
+...(중략)
+SMOKE_ALL_OK 17/17
+```
+
 - [ ] 질문: kubeconfig의 내용을 서버에서 개인 컴퓨터로 받아와서 작업해도 되는지? 즉 `wongyun_sim`의 `~/.kube/`아래의 내용을 다운 받아도 괜찮은지.
 - [ ] 질문: 현재 `rlwrld/.env`의 내용을 `sungjae`로 해놓았는데, 선배님도 `wongyun_sim`에서 작업하시는지? 즉 `.env`의 내용을 바꿔야할지
