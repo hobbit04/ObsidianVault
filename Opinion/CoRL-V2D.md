@@ -24,3 +24,5 @@ SMOKE_ALL_OK 17/17
 
 - [ ] 질문: kubeconfig의 내용을 서버에서 개인 컴퓨터로 받아와서 작업해도 되는지? 즉 `wongyun_sim`의 `~/.kube/`아래의 내용을 다운 받아도 괜찮은지.
 - [ ] 질문: 현재 `rlwrld/.env`의 내용을 `sungjae`로 해놓았는데, 선배님도 `wongyun_sim`에서 작업하시는지? 즉 `.env`의 내용을 바꿔야할지
+## Current state analysis
+1. ![[Pasted image 20261008150002.png]]아무리 worst case라지만 어떻게 이런 오류가 발생할 수 있지? 그리고 ep23, ep24에 
