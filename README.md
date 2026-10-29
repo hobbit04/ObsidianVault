@@ -90,14 +90,14 @@ relative-position errors use the same declared symmetries.
 The host scores against confidential trajectories and scanned meshes. Pose metrics average
 over episodes; CD-O averages over episode/object pairs. Local held-out scores are unavailable.
 
-| Metric | Computation | Direction |
-|---|---|---|
-| AUC | ADD accuracy integrated over 1–9 cm thresholds, minimizing point error over allowed object symmetries. | Higher |
-| SP-SR | Episode success when mean object-centre position error is at most 10 cm and mean symmetry-aware orientation error is at most 0.5 radians. | Higher |
-| MP-SR | Episode success when every object has mean position error under 3 cm and symmetry-aware orientation error under 30°. | Higher |
-| RPE | Relative object-centre position error in another object's frame, minimized over its allowed symmetries, in cm. Single-object episodes contribute zero. | Lower |
-| MPPE | Mean error of six object-attached points at 5 cm radius, minimized over allowed symmetries, in cm. | Lower |
-| CD-O | Symmetric surface Chamfer distance after separate per-mesh Sim(3) registration, in cm. | Lower |
+| Metric | Computation                                                                                                                                            | Direction |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
+| AUC    | ADD accuracy integrated over 1–9 cm thresholds, minimizing point error over allowed object symmetries.                                                 | Higher    |
+| SP-SR  | Episode success when mean object-centre position error is at most 10 cm and mean symmetry-aware orientation error is at most 0.5 radians.              | Higher    |
+| MP-SR  | Episode success when every object has mean position error under 3 cm and symmetry-aware orientation error under 30°.                                   | Higher    |
+| RPE    | Relative object-centre position error in another object's frame, minimized over its allowed symmetries, in cm. Single-object episodes contribute zero. | Lower     |
+| MPPE   | Mean error of six object-attached points at 5 cm radius, minimized over allowed symmetries, in cm.                                                     | Lower     |
+| CD-O   | Symmetric surface Chamfer distance after separate per-mesh Sim(3) registration, in cm.                                                                 | Lower     |
 
 The uploader saves submission IDs and scores in a receipt. Resume pending scoring with:
 
