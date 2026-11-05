@@ -9,7 +9,7 @@ date: 2026-09-15
 
 > 대상: `~/Documents/Postech/2026 CVLab/Repos/video_to_data` @ `8b37535c`
 > 목표: CHORD 논문(`docs/chord/chord.pdf`) 재현
-> 관련: [[V2D_CODE_REPORT.md]]
+> 관련: [[V2D_CODE_REPORT]]
 
 ---
 
