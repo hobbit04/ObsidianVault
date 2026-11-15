@@ -23,7 +23,7 @@ RL 성능을 올리기 위해 고려했던 두 물체의 상대 pose 보상은 �
 | `termination`                       | **−100** | 종료된 스텝                                                                                                                               |
 | `action_rate_l2`                    | −0.005   | 행동 변화량                                                                                                                               |
 | `action_l2`                         | −0.002   | 행동 크기                                                                                                                                |
-| `contact_force_l2`, `force_closure` | 0 (꺼짐)   | 접촉력 크기, force closure                                                                                                                |
+| `contact_force_l2`, `force_closure` | 0        | 접촉력 크기, force closure                                                                                                                |
 1. force_clousre 켜보기
 2. 레퍼런스 접촉 범위 넓혀보기(진행 중)
 3. `hand_space` 정의하고 레퍼런스에서 손이 물체를 잡을 때, `hand_space` 안에 해당 물체가 없다면 음의 보상 주도록 새로운 보상항 추가하기
