@@ -15,5 +15,10 @@ Reference view, query view 두 개가 입력(object mask 포함)으로 들어오
 2. **3d mesh를 만드는 방식:** Mesh를 완벽히 생성할 수는 없기 때문에 정렬, 스케일링 단계 등이 필요하고 오차도 쉽게 발생함. 렌더링을 한 후 비교하는 방식을 사용해서 느림.
 3. **RANSAC 방식:** 두 시점에서 물체의 대응점들이 많아야 하는데, view가 많이 다를 경우 대응점이 적기 때문에 불안정함.
 ## Method
+### Mesh 생성
+### 3d registration
+생성한 mesh와 주어진 query에서 점을 2048개 추출해 각 점마다 descriptor 생성. Mesh의 각 점에 대해 가장 유사한 descriptor를 가진 query에서의 점을 찾아 저장. 반대 방향도 저장. 그 두 집합을 합집합하면 최대 4096쌍으로 이루어진 집합이 나옴. -> 여기서 3쌍씩 뽑아 가면서 RANSAC
+
+
 
 
