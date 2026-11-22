@@ -6,7 +6,7 @@ Lab:
 venue: CVPR
 ---
 ## Task
-
+6D pose estimation
 
 ## Previous Limits
 
